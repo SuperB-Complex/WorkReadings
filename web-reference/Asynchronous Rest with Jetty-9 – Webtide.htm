@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://webtide.com/async-rest-jetty-9/ -->
+<html lang="en-US"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+	<title>Asynchronous Rest with Jetty-9 – Webtide</title>
+<link rel="dns-prefetch" href="https://www.google.com/">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="Webtide » Feed" href="https://webtide.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="Webtide » Comments Feed" href="https://webtide.com/comments/feed/">
+		<!-- This site uses the Google Analytics by MonsterInsights plugin v7.16.1 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+							<script type="text/javascript" async="" src="./Asynchronous Rest with Jetty-9 – Webtide_files/recaptcha__en.js" crossorigin="anonymous" integrity="sha384-81AvY0eD0WRfrSCrRsFkP0r0iO3o5hOgAYEmixw/wrZown4qSgSmwPEXEBsQcT7t"></script><script type="text/javascript" async="" src="./Asynchronous Rest with Jetty-9 – Webtide_files/analytics.js"></script><script src="./Asynchronous Rest with Jetty-9 – Webtide_files/js" type="text/javascript" data-cfasync="false"></script>
+			<script type="text/javascript" data-cfasync="false">
+				var mi_version = '7.16.1';
+				var mi_track_user = true;
+				var mi_no_track_reason = '';
+				
+								var disableStr = 'ga-disable-UA-1149868-2';
+
+				/* Function to detect opted out users */
+				function __gtagTrackerIsOptedOut() {
+					return document.cookie.indexOf( disableStr + '=true' ) > - 1;
+				}
+
+				/* Disable tracking if the opt-out cookie exists. */
+				if ( __gtagTrackerIsOptedOut() ) {
+					window[disableStr] = true;
+				}
+
+				/* Opt-out function */
+				function __gtagTrackerOptout() {
+					document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+					window[disableStr] = true;
+				}
+
+				if ( 'undefined' === typeof gaOptout ) {
+					function gaOptout() {
+						__gtagTrackerOptout();
+					}
+				}
+								window.dataLayer = window.dataLayer || [];
+				if ( mi_track_user ) {
+					function __gtagTracker() {
+						dataLayer.push( arguments );
+					}
+					__gtagTracker( 'js', new Date() );
+					__gtagTracker( 'set', {
+						'developer_id.dZGIzZG' : true,
+						                    });
+					__gtagTracker( 'config', 'UA-1149868-2', {
+						forceSSL:true,					} );
+										window.gtag = __gtagTracker;										(
+						function () {
+							/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+							/* ga and __gaTracker compatibility shim. */
+							var noopfn = function () {
+								return null;
+							};
+							var noopnullfn = function () {
+								return null;
+							};
+							var Tracker = function () {
+								return null;
+							};
+							var p = Tracker.prototype;
+							p.get = noopfn;
+							p.set = noopfn;
+							p.send = noopfn;
+							var __gaTracker = function () {
+								var len = arguments.length;
+								if ( len === 0 ) {
+									return;
+								}
+								var f = arguments[len - 1];
+								if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
+									if ( 'send' === arguments[0] ) {
+										var hitConverted, hitObject = false, action;
+										if ( 'event' === arguments[1] ) {
+											if ( 'undefined' !== typeof arguments[3] ) {
+												hitObject = {
+													'eventAction': arguments[3],
+													'eventCategory': arguments[2],
+													'eventLabel': arguments[4],
+													'value': arguments[5] ? arguments[5] : 1,
+												}
+											}
+										}
+										if ( typeof arguments[2] === 'object' ) {
+											hitObject = arguments[2];
+										}
+										if ( 'undefined' !== typeof (
+											arguments[1].hitType
+										) ) {
+											hitObject = arguments[1];
+										}
+										if ( hitObject ) {
+											action = 'timing' === arguments[1].hitType ? 'timing_complete' : hitObject.eventAction;
+											hitConverted = mapArgs( hitObject );
+											__gtagTracker( 'event', action, hitConverted );
+										}
+									}
+									return;
+								}
+
+								function mapArgs( args ) {
+									var gaKey, hit = {};
+									var gaMap = {
+										'eventCategory': 'event_category',
+										'eventAction': 'event_action',
+										'eventLabel': 'event_label',
+										'eventValue': 'event_value',
+										'nonInteraction': 'non_interaction',
+										'timingCategory': 'event_category',
+										'timingVar': 'name',
+										'timingValue': 'value',
+										'timingLabel': 'event_label',
+									};
+									for ( gaKey in gaMap ) {
+										if ( 'undefined' !== typeof args[gaKey] ) {
+											hit[gaMap[gaKey]] = args[gaKey];
+										}
+									}
+									return hit;
+								}
+
+								try {
+									f.hitCallback();
+								} catch ( ex ) {
+								}
+							};
+							__gaTracker.create = function () {
+								return new Tracker();
+							};
+							__gaTracker.getByName = noopnullfn;
+							__gaTracker.getAll = function () {
+								return [];
+							};
+							__gaTracker.remove = noopfn;
+							__gaTracker.loaded = true;
+							window['__gaTracker'] = __gaTracker;
+						}
+					)();
+									} else {
+										console.log( "" );
+					( function () {
+							function __gtagTracker() {
+								return null;
+							}
+							window['__gtagTracker'] = __gtagTracker;
+							window['gtag'] = __gtagTracker;
+					} )();
+									}
+			</script>
+				<!-- / Google Analytics by MonsterInsights -->
+				<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/webtide.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.6.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script src="./Asynchronous Rest with Jetty-9 – Webtide_files/wp-emoji-release.min.js" type="text/javascript" defer=""></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel="stylesheet" id="wp-pagenavi-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/pagenavi-css.css" type="text/css" media="all">
+<link rel="stylesheet" id="monsterinsights-popular-posts-style-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/frontend.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="spacious_style-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/style.css" type="text/css" media="all">
+<style id="spacious_style-inline-css" type="text/css">
+.previous a:hover, .next a:hover, a, #site-title a:hover,.widget_fun_facts .counter-icon,.team-title a:hover, .main-navigation ul li.current_page_item a, .main-navigation ul li:hover > a, .main-navigation ul li ul li a:hover, .main-navigation ul li ul li:hover > a,
+			.main-navigation ul li.current-menu-item ul li a:hover, .main-navigation a:hover, .main-navigation ul li.current-menu-item a, .main-navigation ul li.current_page_ancestor a,
+			.main-navigation ul li.current-menu-ancestor a, .main-navigation ul li.current_page_item a,
+			.main-navigation ul li:hover > a, .small-menu a:hover, .small-menu ul li.current-menu-item a, .small-menu ul li.current_page_ancestor a,
+			.small-menu ul li.current-menu-ancestor a, .small-menu ul li.current_page_item a,
+			.small-menu ul li:hover > a, .widget_service_block a.more-link:hover, .widget_featured_single_post a.read-more:hover,
+			#secondary a:hover,logged-in-as:hover  a, .breadcrumb a:hover, .tg-one-half .widget-title a:hover, .tg-one-third .widget-title a:hover,
+			.tg-one-fourth .widget-title a:hover, .pagination a span:hover, #content .comments-area a.comment-permalink:hover, .comments-area .comment-author-link a:hover, .comment .comment-reply-link:hover, .nav-previous a:hover, .nav-next a:hover, #wp-calendar #today, .footer-socket-wrapper .copyright a:hover, .read-more, .more-link, .post .entry-title a:hover, .page .entry-title a:hover, .entry-meta a:hover, .type-page .entry-meta a:hover, .single #content .tags a:hover , .widget_testimonial .testimonial-icon:before, .widget_featured_posts .tg-one-half .entry-title a:hover, .main-small-navigation li:hover > .sub-toggle, .main-navigation ul li.tg-header-button-wrap.button-two a, .main-navigation ul li.tg-header-button-wrap.button-two a:hover, .woocommerce.woocommerce-add-to-cart-style-2 ul.products li.product .button, .header-action .search-wrapper:hover .fa, .woocommerce .star-rating span::before, .main-navigation ul li:hover > .sub-toggle{color:#5f85b0;}.spacious-button, input[type="reset"], input[type="button"], input[type="submit"], button,.spacious-woocommerce-cart-views .cart-value, #featured-slider .slider-read-more-button, .slider-cycle .cycle-prev, .slider-cycle .cycle-next, #progress, .widget_our_clients .clients-cycle-prev, .widget_our_clients .clients-cycle-next, #controllers a:hover, #controllers a.active, .pagination span,.site-header .menu-toggle:hover,#team-controllers a.active,	#team-controllers a:hover, .call-to-action-button, .call-to-action-button, .comments-area .comment-author-link spanm,.team-social-icon a:hover, a#back-top:before, .entry-meta .read-more-link, a#scroll-up, #search-form span, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button, .woocommerce #respond input#submit, .woocommerce #content input.button,	.woocommerce-page a.button, .woocommerce-page button.button, .woocommerce-page input.button,	.woocommerce-page #respond input#submit, .woocommerce-page #content input.button, .woocommerce a.button:hover,.woocommerce button.button:hover, .woocommerce input.button:hover,.woocommerce #respond input#submit:hover, .woocommerce #content input.button:hover,.woocommerce-page a.button:hover, .woocommerce-page button.button:hover,.woocommerce-page input.button:hover,	.woocommerce-page #respond input#submit:hover, .woocommerce-page #content input.button:hover, #content .wp-pagenavi .current, #content .wp-pagenavi a:hover,.main-small-navigation .sub-toggle, .main-navigation ul li.tg-header-button-wrap.button-one a, .elementor .team-five-carousel.team-style-five .swiper-button-next, .elementor .team-five-carousel.team-style-five .swiper-button-prev, .elementor .main-block-wrapper .swiper-button-next, .elementor .main-block-wrapper .swiper-button-prev, .woocommerce-product .main-product-wrapper .product-container .product-cycle-prev, .woocommerce-product .main-product-wrapper .product-container .product-cycle-next{background-color:#5f85b0;}.main-small-navigation li:hover, .main-small-navigation ul > .current_page_item, .main-small-navigation ul > .current-menu-item, .widget_testimonial .testimonial-cycle-prev, .widget_testimonial .testimonial-cycle-next, .woocommerce-product .main-product-wrapper .product-wrapper .woocommerce-image-wrapper-two .hovered-cart-wishlist .add-to-wishlist:hover, .woocommerce-product .main-product-wrapper .product-wrapper .woocommerce-image-wrapper-two .hovered-cart-wishlist .add-to-cart:hover, .woocommerce-product .main-product-wrapper .product-wrapper .product-outer-wrapper .woocommerce-image-wrapper-one .add-to-cart a:hover{background:#5f85b0;}.main-navigation ul li ul, .widget_testimonial .testimonial-post{border-top-color:#5f85b0;}blockquote, .call-to-action-content-wrapper{border-left-color:#5f85b0;}.site-header .menu-toggle:hover.entry-meta a.read-more:hover,
+			#featured-slider .slider-read-more-button:hover, .slider-cycle .cycle-prev:hover, .slider-cycle .cycle-next:hover,
+			.call-to-action-button:hover,.entry-meta .read-more-link:hover,.spacious-button:hover, input[type="reset"]:hover,
+			input[type="button"]:hover, input[type="submit"]:hover, button:hover, .main-navigation ul li.tg-header-button-wrap.button-one a:hover, .main-navigation ul li.tg-header-button-wrap.button-two a:hover{background:#2d537e;}.pagination a span:hover, .widget_testimonial .testimonial-post, .team-social-icon a:hover, .single #content .tags a:hover,.previous a:hover, .next a:hover, .main-navigation ul li.tg-header-button-wrap.button-one a, .main-navigation ul li.tg-header-button-wrap.button-one a, .main-navigation ul li.tg-header-button-wrap.button-two a, .woocommerce.woocommerce-add-to-cart-style-2 ul.products li.product .button, .woocommerce-product .main-product-wrapper .product-wrapper .woocommerce-image-wrapper-two .hovered-cart-wishlist .add-to-wishlist, .woocommerce-product .main-product-wrapper .product-wrapper .woocommerce-image-wrapper-two .hovered-cart-wishlist .add-to-cart{border-color:#5f85b0;}.widget-title span{border-bottom-color:#5f85b0;}.footer-widgets-area a:hover{color:#5f85b0!important;}.footer-search-form{color:rgba(95,133,176, 0.85);}.header-toggle-wrapper .header-toggle{border-right-color:#5f85b0;}.main-navigation ul li ul li a{color:#666666;}.main-navigation ul li.tg-header-button-wrap.button-one a{color:#ffffff;}.main-navigation ul li.tg-header-button-wrap.button-one a:hover{color:#ffffff;}.main-navigation ul li.tg-header-button-wrap.button-two a{color:#ffffff;}.main-navigation ul li.tg-header-button-wrap.button-two a:hover{color:#ffffff;}#comments{background-color:#FFFFFF;}.call-to-action-button{color:#FFFFFF;}.footer-widgets-area, .footer-widgets-area .tg-one-fourth p{color:#666666;}#site-title a{font-size:44px;}.main-navigation ul li a{font-family:Lato;font-size:18px;}.main-navigation ul li ul li a, .main-navigation ul li ul li a, .main-navigation ul li.current-menu-item ul li a, .main-navigation ul li ul li.current-menu-item a, .main-navigation ul li.current_page_ancestor ul li a, .main-navigation ul li.current-menu-ancestor ul li a, .main-navigation ul li.current_page_item ul li a{font-size:14px;}.footer-widgets-wrapper {background-color:transparent}#colophon {background-color:#333333}.social-links { float: right; padding: 0 0 0 15px; } .social-links ul li { float: left; padding: 5px 0 5px 10px; } .small-info-text { float: right; padding: 0 0 0 15px; } #masthead .small-menu { float: left; } #masthead .small-menu a { padding: 5px 16px 0 0; } @media screen and (max-width:767px){.social-links{text-align:center;float:none;padding-left:0;padding-top:10px}.small-info-text{text-align:center;float:none;padding-left:0}.social-links ul li,.social-links ul li a{float:none;display:inline}#header-meta .small-menu{text-align:center;float:none}#header-meta .small-menu li{float:none;display:inline}#header-meta .small-menu a{float:none;display:inline;padding:5px 5px 0}}
+
+</style>
+<link rel="stylesheet" id="spacious-genericons-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/genericons.css" type="text/css" media="all">
+<link rel="stylesheet" id="spacious-font-awesome-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="spacious_googlefonts-css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/css" type="text/css" media="all">
+<script type="text/javascript" id="monsterinsights-frontend-script-js-extra">
+/* <![CDATA[ */
+var monsterinsights_frontend = {"js_events_tracking":"true","download_extensions":"doc,pdf,ppt,zip,xls,docx,pptx,xlsx","inbound_paths":"[]","home_url":"https:\/\/webtide.com","hash_tracking":"false","ua":"UA-1149868-2"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/frontend-gtag.min.js" id="monsterinsights-frontend-script-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/picturefill.min.js" id="wr2x-picturefill-js-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/jquery.min.js" id="jquery-core-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/jquery-migrate.min.js" id="jquery-migrate-js"></script>
+<!--[if lte IE 8]>
+<script type='text/javascript' src='https://webtide.com/wp-content/themes/spacious-pro/js/html5shiv.min.js?ver=5.6.2' id='html5-js'></script>
+<![endif]-->
+<link rel="https://api.w.org/" href="https://webtide.com/wp-json/"><link rel="alternate" type="application/json" href="https://webtide.com/wp-json/wp/v2/posts/1329"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://webtide.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://webtide.com/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.6.2">
+<link rel="canonical" href="https://webtide.com/async-rest-jetty-9/">
+<link rel="shortlink" href="https://webtide.com/?p=1329">
+<link rel="alternate" type="application/json+oembed" href="https://webtide.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwebtide.com%2Fasync-rest-jetty-9%2F">
+<link rel="preload" as="style" href="./Asynchronous Rest with Jetty-9 – Webtide_files/prettify.css"><meta name="twitter:widgets:link-color" content="#000000"><meta name="twitter:widgets:border-color" content="#000000"><meta name="twitter:partner" content="tfwp"><link rel="icon" href="https://webtide.com/wp-content/uploads/2017/01/cropped-cropped-WTLogo-2-32x32.png" sizes="32x32">
+<link rel="icon" href="https://webtide.com/wp-content/uploads/2017/01/cropped-cropped-WTLogo-2-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://webtide.com/wp-content/uploads/2017/01/cropped-cropped-WTLogo-2-180x180.png">
+<meta name="msapplication-TileImage" content="https://webtide.com/wp-content/uploads/2017/01/cropped-cropped-WTLogo-2-270x270.png">
+
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Asynchronous Rest with Jetty-9"><meta name="twitter:site" content="@JettyProject"><meta name="twitter:description" content="This blog is an update for jetty-9 of one published for Jetty 7 in 2008 as an example web application  that uses Jetty asynchronous HTTP client and the asynchronoous servlets 3.0 API, to call an eBay restful web service. The…">
+<!--		<style type="text/css">--><!--</style>-->
+<!--		--><link rel="stylesheet" type="text/css" href="./Asynchronous Rest with Jetty-9 – Webtide_files/prettify.css"><script charset="utf-8" src="./Asynchronous Rest with Jetty-9 – Webtide_files/button.cf7aaea83eb75b84ae4508f0ceb5dc4c.js"></script></head>
+
+<body class="post-template-default single single-post postid-1329 single-format-standard wp-custom-logo wp-embed-responsive  better-responsive-menu narrow-1218 woocommerce-sale-style-default woocommerce-add-to-cart-default" data-new-gr-c-s-check-loaded="14.997.0" data-gr-ext-installed="">
+
+
+
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="https://webtide.com/async-rest-jetty-9/#main">Skip to content</a>
+
+	
+		<header id="masthead" class="site-header clearfix spacious-header-display-one">
+
+					<div id="header-meta">
+				<div class="inner-wrap clearfix">
+					
+		
+		<div class="social-links clearfix">
+			<ul>
+				<li class="spacious-facebook"><a href="https://www.facebook.com/webtide" target="_blank"></a></li><li class="spacious-twitter"><a href="https://twitter.com/JettyProject" target="_blank"></a></li><li class="spacious-github"><a href="https://github.com/eclipse/jetty.project" target="_blank"></a></li>
+							</ul>
+		</div><!-- .social-links -->
+							<nav class="small-menu">
+											</nav>
+				</div>
+			</div>
+		
+		
+		
+		<div id="header-text-nav-container" class="">
+
+			<div class="inner-wrap clearfix" id="spacious-header-display-one">
+
+				<div id="header-text-nav-wrap" class="clearfix">
+					<div id="header-left-section">
+													<div id="header-logo-image">
+
+								<a href="https://webtide.com/" class="custom-logo-link" rel="home"><img width="150" height="84" src="./Asynchronous Rest with Jetty-9 – Webtide_files/cropped-WTLogo-2.png" class="custom-logo" alt="Webtide"></a>
+							</div><!-- #header-logo-image -->
+													<div id="header-text" class="">
+															<h3 id="site-title">
+									<a href="https://webtide.com/" title="Webtide" rel="home">Webtide</a>
+								</h3>
+															<p id="site-description">Jetty and CometD Expert Services</p>
+													</div><!-- #header-text -->
+					</div><!-- #header-left-section -->
+
+					<div id="header-right-section">
+						
+													<div class="header-action">
+															</div>
+						
+						
+		<nav id="site-navigation" class="main-navigation clearfix  " role="navigation">
+			<p class="menu-toggle">Menu</p>
+			<div class="menu-primary-container"><ul id="menu-top-navigation" class="nav-menu"><li id="menu-item-7" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7"><a href="https://webtide.com/why-choose-webtide/">Why Choose…</a>
+<ul class="sub-menu">
+	<li id="menu-item-2888" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2888"><a href="https://webtide.com/why-choose-webtide/">Webtide?</a></li>
+	<li id="menu-item-2887" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2887"><a href="https://webtide.com/why-choose-jetty/">Jetty?</a></li>
+	<li id="menu-item-2886" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2886"><a href="https://webtide.com/why-choose-cometd/">CometD?</a></li>
+</ul>
+<span class="sub-toggle"> <span class="fa  fa-caret-right"></span> </span></li>
+<li id="menu-item-2895" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-2895"><a href="https://webtide.com/lifecycle-support/">Services</a>
+<ul class="sub-menu">
+	<li id="menu-item-2894" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-2894"><a href="https://webtide.com/lifecycle-support/">Lifecycle Support</a>
+	<ul class="sub-menu">
+		<li id="menu-item-2893" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2893"><a href="https://webtide.com/expert-advice/">Expert Advice</a></li>
+		<li id="menu-item-2891" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2891"><a href="https://webtide.com/migration-assistance/">Migration Assistance</a></li>
+		<li id="menu-item-2892" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2892"><a href="https://webtide.com/performance-tuning/">Performance Tuning</a></li>
+		<li id="menu-item-3009" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3009"><a href="https://webtide.com/production-support/">Production Support</a></li>
+	</ul>
+<span class="sub-toggle"> <span class="fa  fa-caret-right"></span> </span></li>
+	<li id="menu-item-2890" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2890"><a href="https://webtide.com/accelerator-program/">Accelerator Program</a></li>
+</ul>
+<span class="sub-toggle"> <span class="fa  fa-caret-right"></span> </span></li>
+<li id="menu-item-2896" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-2896"><a href="https://webtide.com/blogs/">Blogs</a></li>
+<li id="menu-item-2904" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-2904"><a href="https://webtide.com/about-webtide/">Company</a>
+<ul class="sub-menu">
+	<li id="menu-item-2901" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2901"><a href="https://webtide.com/about-webtide/">About Webtide</a></li>
+	<li id="menu-item-2903" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2903"><a href="https://webtide.com/team/">Team</a></li>
+</ul>
+<span class="sub-toggle"> <span class="fa  fa-caret-right"></span> </span></li>
+<li id="menu-item-2902" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2902"><a href="https://webtide.com/contact/">Contact Us</a></li>
+</ul></div>		</nav>
+
+							</div><!-- #header-right-section -->
+
+				</div><!-- #header-text-nav-wrap -->
+
+				
+			</div><!-- .inner-wrap -->
+
+			
+		</div><!-- #header-text-nav-container -->
+
+		
+					<div class="header-post-title-container clearfix">
+				<div class="inner-wrap">
+					<div class="post-title-wrapper">
+													<h1 class="header-post-title-class entry-title">Asynchronous Rest with Jetty-9</h1>
+							
+						
+					</div>
+									</div>
+			</div>
+				</header>
+		<div id="main" class="clearfix">
+		<div class="inner-wrap">
+
+
+<div id="primary">
+	<div id="content" class="clearfix">
+		
+			
+<article id="post-1329" class="post-1329 post type-post status-publish format-standard hentry category-general category-jetty-2 category-performance category-servlets category-uncategorized  tg-column-two">
+		<div class="entry-content clearfix">
+		<div style="text-align: justify;">
+<p style="text-align: justify;">This blog is an update for jetty-9 of one published for <a href="https://webtide.com/2008/08/asynchronous-restful-webapplication-2/">Jetty 7 in 2008</a> as an example web application&nbsp; that uses Jetty asynchronous HTTP client and the asynchronoous servlets 3.0 API, to call an eBay restful web service. The technique combines the Jetty asynchronous HTTP client with the Jetty servers ability to suspend servlet processing, so that threads are not held while waiting for rest responses. Thus threads can handle many more requests and web applications using this technique should obtain at least ten fold increases in performance.</p>
+<p><a href="./Asynchronous Rest with Jetty-9 – Webtide_files/Screenshot-from-2013-04-19-091519.png"><img loading="lazy" class="alignnone size-full wp-image-1325" alt="Screenshot from 2013-04-19 09:15:19" src="./Asynchronous Rest with Jetty-9 – Webtide_files/Screenshot-from-2013-04-19-091519.png" width="681" height="622"></a></p>
+<p style="text-align: justify;">The screen shot above shows four iframes calling either a synchronous or the asynchronous demonstration servlet, with the following results:</p>
+<dl>
+<dt><strong>Synchronous Call, Single Keyword</strong></dt>
+<dd>A request to lookup ebay auctions with the keyword “kayak” is handled by the synchronous implementation. The call takes 261ms and the servlet thread is blocked for the entire time. A server with a 100 threads in a pool would be able to handle 383 requests per second.</dd>
+<dt><strong>Asynchronous Call, Single Keyword</strong></dt>
+<dd>A request to lookup ebay auctions with the keyword “kayak” is handled by the asynchronous implementation. The call takes 254ms, but the servlet request is suspended so the request thread is held for only 5ms. A server with a 100 threads in a pool would be able to handle 20,000 requests per second (if not constrained by other limitations)</dd>
+<dt><strong>Synchronous Call, Three Keywords</strong></dt>
+<dd>A request to lookup ebay auctions with keywords “mouse”, “beer” and “gnome” is handled by the synchronous implementation. Three calls are made to ebay in series, each taking approx 306ms, with a total time of 917ms and the servlet thread is blocked for the entire time. A server with a 100 threads in a pool would be able to handle only 109 requests per second!</dd>
+<dt><strong>Asynchronous Call, Three Keywords</strong></dt>
+<dd>A request to lookup ebay auctions with keywords “mouse”, “beer” and “gnome” is handled by the asynchronous implementation. The three calls can be made to ebay in parallel, each taking approx 300ms, with a total time of 453ms and the servlet request is suspended, so the request thread is held for only 7ms. A server with a 100 threads in a pool would be able to handle 14,000 requests per second (if not constrained by other limitations).</dd>
+</dl>
+<p>It can be seen by these results that asynchronous handling of restful requests can dramatically improve both the page load time and the capacity by avoiding thread starvation.</p>
+<p>The code for the example asynchronous servlet is available from <a href="https://github.com/eclipse/jetty.project/blob/jetty-9.3.7.v20160115/examples/async-rest/async-rest-jar/src/main/java/org/eclipse/jetty/example/asyncrest/AsyncRestServlet.java">jetty-9</a> examples and works as follows:</p>
+<ol>
+<li>The servlet is passed the request, which is detected as the first dispatch, so the request is suspended and a list to accumulate results is added as a request attribute:
+<pre class=" prettyprinted" style=""><code class=" prettyprinted" style=""><span class="com"><span class="com">// If no results, this must be the first dispatch, so send the REST request(s)</span></span><span class="pln"><span class="pln">
+</span></span><span class="kwd"><span class="kwd">if</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">results</span></span><span class="pun"><span class="pun">==</span></span><span class="kwd"><span class="kwd">null</span></span><span class="pun"><span class="pun">)</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">{</span></span><span class="pln"><span class="pln">
+    </span></span><span class="kwd"><span class="kwd">final</span></span><span class="pln"><span class="pln"> </span></span><span class="typ"><span class="typ">Queue</span></span><map<string, string=""><span class="pun"><span class="pun">&gt;</span></span><span class="pln"><span class="pln"> resultsQueue </span></span><span class="pun"><span class="pun">=</span></span><span class="pln"><span class="pln"> </span></span><span class="kwd"><span class="kwd">new</span></span><span class="pln"><span class="pln"> </span></span><span class="typ"><span class="typ">ConcurrentLinkedQueue</span></span><span class="pun"><span class="pun">&lt;&gt;();</span></span><span class="pln"><span class="pln">
+    request</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">setAttribute</span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">RESULTS_ATTR</span></span><span class="pun"><span class="pun">,</span></span><span class="pln"><span class="pln"> results</span></span><span class="pun"><span class="pun">=</span></span><span class="pln"><span class="pln">resultsQueue</span></span><span class="pun"><span class="pun">);</span></span><span class="pln"><span class="pln">
+
+    </span></span><span class="kwd"><span class="kwd">final</span></span><span class="pln"><span class="pln"> </span></span><span class="typ"><span class="typ">AsyncContext</span></span><span class="pln"><span class="pln"> </span></span><span class="kwd"><span class="kwd">async</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">=</span></span><span class="pln"><span class="pln"> request</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">startAsync</span></span><span class="pun"><span class="pun">();</span></span><span class="pln"><span class="pln">
+    </span></span><span class="kwd"><span class="kwd">async</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">setTimeout</span></span><span class="pun"><span class="pun">(</span></span><span class="lit"><span class="lit">30000</span></span><span class="pun"><span class="pun">);</span></span><span class="pln"><span class="pln">
+    </span></span><span class="pun"><span class="pun">...</span></span></map<string,></code></pre>
+</li>
+<li>After suspending, the servlet creates and sends an asynchronous HTTP exchange for each keyword:
+<pre class=" prettyprinted" style=""><code class=" prettyprinted" style=""><span class="kwd"><span class="kwd">for</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">(</span></span><span class="kwd"><span class="kwd">final</span></span><span class="pln"><span class="pln"> </span></span><span class="typ"><span class="typ">String</span></span><span class="pln"><span class="pln"> item</span></span><span class="pun"><span class="pun">:</span></span><span class="pln"><span class="pln">keywords</span></span><span class="pun"><span class="pun">)</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">{</span></span><span class="pln"><span class="pln">
+  _client</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">newRequest</span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">restURL</span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">item</span></span><span class="pun"><span class="pun">)).</span></span><span class="pln"><span class="pln">method</span></span><span class="pun"><span class="pun">(</span></span><span class="typ"><span class="typ">HttpMethod</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">GET</span></span><span class="pun"><span class="pun">).</span></span><span class="pln"><span class="pln">send</span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">
+    </span></span><span class="kwd"><span class="kwd">new</span></span><span class="pln"><span class="pln"> </span></span><span class="typ"><span class="typ">AsyncRestRequest</span></span><span class="pun"><span class="pun">()</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">{</span></span><span class="pln"><span class="pln">
+      </span></span><span class="lit"><span class="lit">@Override</span></span><span class="pln"><span class="pln">
+      </span></span><span class="kwd"><span class="kwd">void</span></span><span class="pln"><span class="pln"> onAuctionFound</span></span><span class="pun"><span class="pun">(</span></span><span class="typ"><span class="typ">Map</span></span><span class="pun"><span class="pun">&lt;</span></span><span class="typ"><span class="typ">String</span></span><span class="pun"><span class="pun">,</span></span><span class="typ"><span class="typ">String</span></span><span class="pun"><span class="pun">&gt;</span></span><span class="pln"><span class="pln"> auction</span></span><span class="pun"><span class="pun">)</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">{</span></span><span class="pln"><span class="pln">
+        resultsQueue</span></span><span class="pun"><span class="pun">.</span></span><span class="kwd"><span class="kwd">add</span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">auction</span></span><span class="pun"><span class="pun">);</span></span><span class="pln"><span class="pln">
+      </span></span><span class="pun"><span class="pun">}</span></span><span class="pln"><span class="pln">
+      </span></span><span class="lit"><span class="lit">@Override</span></span><span class="pln"><span class="pln">
+      </span></span><span class="kwd"><span class="kwd">void</span></span><span class="pln"><span class="pln"> onComplete</span></span><span class="pun"><span class="pun">()</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">{</span></span><span class="pln"><span class="pln">
+        </span></span><span class="kwd"><span class="kwd">if</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">(</span></span><span class="pln"><span class="pln">outstanding</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">decrementAndGet</span></span><span class="pun"><span class="pun">()&lt;=</span></span><span class="lit"><span class="lit">0</span></span><span class="pun"><span class="pun">)</span></span><span class="pln"><span class="pln">
+          </span></span><span class="kwd"><span class="kwd">async</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">dispatch</span></span><span class="pun"><span class="pun">();</span></span><span class="pln"><span class="pln">
+      </span></span><span class="pun"><span class="pun">}</span></span><span class="pln"><span class="pln">
+    </span></span><span class="pun"><span class="pun">});</span></span><span class="pln"><span class="pln">
+</span></span><span class="pun"><span class="pun">}</span></span></code></pre>
+</li>
+<li>All the rest requests are handled in parallel by the eBay servers and when each of them completes, the call back on the exchange object is called. The code (shown above) extracts auction information in the base class from the JSON response and adds it to the results list in the onAuctionFound method.&nbsp; In the onComplete method, the count of expected responses is then decremented and when it reaches 0, the suspended request is resumed by a call to dispatch.</li>
+<li>After being resumed (dispatched), the request is re-dispatched to the servlet. This time the request is not initial and has results, so the results are retrieved from the request attribute and normal servlet style code is used to generate a response:
+<pre class=" prettyprinted" style=""><span class="typ">List</span><map<string, string=""><span class="pun">&gt;</span><span class="pln"> results </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="typ">List</span><map<string, string=""><span class="pun">&gt;)</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">getAttribute</span><span class="pun">(</span><span class="pln">CLIENT_ATTR</span><span class="pun">);</span><span class="pln">
+response</span><span class="pun">.</span><span class="pln">setContentType</span><span class="pun">(</span><span class="str">"text/html"</span><span class="pun">);</span><span class="pln">
+</span><span class="typ">PrintWriter</span><span class="pln"> </span><span class="kwd">out</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">();</span><span class="pln">
+</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"</span><style type="text/css"><span class="str">img:hover {height:75px}</span></style><span class="str">"</span><span class="pun">);</span><span class="pln">
+
+</span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Map</span><string, string=""><span class="pln"> m </span><span class="pun">:</span><span class="pln"> results</span><span class="pun">){</span><span class="pln">
+  </span><span class="kwd">out</span><span class="pun">.</span><span class="kwd">print</span><span class="pun">(</span><span class="str">"</span><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22"><span class="str">"</span><span class="pun">);</span><span class="pln">
+
+</span><span class="pun">...</span><span class="pln">
+
+</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">""</span><span class="pun">);</span></a></string,></map<string,></map<string,></pre><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22">
+</a></li><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22">
+<li>The example does lack some error and timeout handling.</li>
+</a></ol><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22">
+<p>This example shows how the Jetty asynchronous client can easily be combined with the asynchronous servlets of Jetty-9 (or the Continuations of Jetty-7) to produce very scalable web applications.</p>
+</a></div><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22">
+<div class="extra-hatom"><span class="entry-title">Asynchronous Rest with Jetty-9</span></div>
+</a><div class="twitter-share"><a href="https://%22%22+m.get%28%22viewitemurlfornaturalsearch%22%29+%22//%22"></a><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" style="position: static; visibility: visible; width: 61px; height: 20px;" title="Twitter Tweet Button" src="./Asynchronous Rest with Jetty-9 – Webtide_files/tweet_button.6e189c4f2b6d88c453045806323cdcf3.en.html" data-url="https://webtide.com/async-rest-jetty-9/"></iframe></div>
+	</div>
+
+	<footer class="entry-meta-bar clearfix"><div class="entry-meta clearfix">
+			<span class="by-author author vcard"><a class="url fn n" href="https://webtide.com/author/admin/">admin</a></span>
+
+			<span class="date"><a href="https://webtide.com/async-rest-jetty-9/" title="11:53 pm" rel="bookmark"><time class="entry-date published" datetime="2013-04-18T23:53:57+00:00">April 18, 2013</time></a></span>
+										<span class="category"><a href="https://webtide.com/category/general/" rel="category tag">General</a>, <a href="https://webtide.com/category/jetty-2/" rel="category tag">Jetty</a>, <a href="https://webtide.com/category/performance/" rel="category tag">performance</a>, <a href="https://webtide.com/category/servlets/" rel="category tag">Servlets</a>, <a href="https://webtide.com/category/uncategorized/" rel="category tag">Uncategorized</a></span>
+					
+								
+								
+			
+			</div></footer>
+	</article>
+
+
+					<ul class="default-wp-page clearfix">
+			<li class="previous"><a href="https://webtide.com/jetty-spdy-php-and-wordpress/" rel="prev"><span class="meta-nav">←</span> Jetty, SPDY, PHP and WordPress</a></li>
+			<li class="next"><a href="https://webtide.com/jetty-spdy-to-http-proxy/" rel="next">Jetty SPDY to HTTP Proxy <span class="meta-nav">→</span></a></li>
+		</ul>
+	
+
+			
+			
+			
+		
+	</div><!-- #content -->
+</div><!-- #primary -->
+
+
+<div id="secondary">
+			
+		<aside id="search-2" class="widget widget_search"><form action="https://webtide.com/" class="search-form searchform clearfix" method="get">
+	<div class="search-wrap">
+		<input type="text" placeholder="Search" class="s field" name="s">
+		<button class="search-icon" type="submit"></button>
+	</div>
+</form><!-- .searchform --></aside>
+		<aside id="recent-posts-2" class="widget widget_recent_entries">
+		<h3 class="widget-title"><span>Recent Posts</span></h3>
+		<ul>
+											<li>
+					<a href="https://webtide.com/introducing-jetty-load-generator/">Introducing Jetty Load Generator</a>
+									</li>
+											<li>
+					<a href="https://webtide.com/a-story-about-unix-unicode-java-filesystems-internationalization-and-normalization/">A story about Unix, Unicode, Java, filesystems, internationalization and normalization</a>
+									</li>
+											<li>
+					<a href="https://webtide.com/community-projects-contributors-take-on-jakarta-ee-9/">Community Projects &amp; Contributors Take on Jakarta EE 9</a>
+									</li>
+											<li>
+					<a href="https://webtide.com/do-looms-claims-stack-up-part-2/">Do Looms Claims Stack Up? Part 2: Thread Pools?</a>
+									</li>
+											<li>
+					<a href="https://webtide.com/do-looms-claims-stack-up-part-1/">Do Loom’s Claims Stack Up? Part 1: Millions of Threads?</a>
+									</li>
+					</ul>
+
+		</aside><!--
+Plugin: Custom Meta Widget
+Plugin URL: http://shinraholdings.com/plugins/custom-meta-widget/
+-->
+<aside id="custommetawidget-2" class="widget customMetaWidget"><h3 class="widget-title"><span>RSS</span></h3>		<ul>
+
+		
+		
+					<li><a href="https://webtide.com/feed/">Entries <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+		
+
+		
+			<li><a href="https://webtide.com/comments/feed/">Comments <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+		
+				</ul>
+
+	</aside>	</div>
+
+
+</div><!-- .inner-wrap -->
+</div><!-- #main -->
+
+<footer id="colophon" class="clearfix">
+		<div class="footer-socket-wrapper clearfix copyright-center">
+		<div class="inner-wrap">
+			<div class="footer-socket-area">
+				<div class="copyright"><p>Webtide, LLC. is owned and operated by the developers of the Eclipse Jetty open source project.</p><p><a href="https://www.eclipse.org/jetty/">Jetty</a> is a registered trademark of the <a href="https://www.eclipse.org/">Eclipse Foundation, Inc.</a></p><p><strong>Copyright © 2021 <a href="https://webtide.com/" title="Webtide"><span>Webtide</span></a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a href="https://webtide.com/privacy-policy/">Privacy Policy</a>&nbsp; &nbsp; &nbsp;<a href="https://webtide.com/terms-of-use/">Terms of Use</a></strong></p><p>&nbsp;</p></div>				<nav class="small-menu clearfix">
+									</nav>
+			</div>
+		</div>
+	</div>
+</footer>
+
+	<a href="https://webtide.com/async-rest-jetty-9/#masthead" id="scroll-up" style="display: none;"></a>
+
+
+</div><!-- #page -->
+
+
+<script type="text/javascript">
+/* <![CDATA[ */
+r3f5x9JS=escape(document['referrer']);
+hf4N='8ecaed9350632423fe573e6078093746';
+hf4V='3c617aad2a3c0f5b9e45203721da3bd8';
+jQuery(document).ready(function($){var e="#commentform, .comment-respond form, .comment-form, #lostpasswordform, #registerform, #loginform, #login_form, #wpss_contact_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","r3f5x9JS").attr("value",r3f5x9JS).appendTo(e);return true;});var h="form[method='post']";$(h).submit(function(){$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(h);return true;});});
+/* ]]> */
+</script> 
+<script type="text/javascript" id="code-prettify-js-extra">
+/* <![CDATA[ */
+var codePrettifyLoaderBaseUrl = "https:\/\/webtide.com\/wp-content\/plugins\/code-prettify\/prettify";
+/* ]]> */
+</script>
+
+<script type="text/javascript" id="google-invisible-recaptcha-js-before">
+var renderInvisibleReCaptcha = function() {
+
+    for (var i = 0; i < document.forms.length; ++i) {
+        var form = document.forms[i];
+        var holder = form.querySelector('.inv-recaptcha-holder');
+
+        if (null === holder) continue;
+		holder.innerHTML = '';
+
+         (function(frm){
+			var cf7SubmitElm = frm.querySelector('.wpcf7-submit');
+            var holderId = grecaptcha.render(holder,{
+                'sitekey': '6LeiExkUAAAAAB8Up2furRKdrREhhcyq6ANPrDFv', 'size': 'invisible', 'badge' : 'bottomright',
+                'callback' : function (recaptchaToken) {
+					if((null !== cf7SubmitElm) && (typeof jQuery != 'undefined')){jQuery(frm).submit();grecaptcha.reset(holderId);return;}
+					 HTMLFormElement.prototype.submit.call(frm);
+                },
+                'expired-callback' : function(){grecaptcha.reset(holderId);}
+            });
+
+			if(null !== cf7SubmitElm && (typeof jQuery != 'undefined') ){
+				jQuery(cf7SubmitElm).off('click').on('click', function(clickEvt){
+					clickEvt.preventDefault();
+					grecaptcha.execute(holderId);
+				});
+			}
+			else
+			{
+				frm.onsubmit = function (evt){evt.preventDefault();grecaptcha.execute(holderId);};
+			}
+
+
+        })(form);
+    }
+};
+</script>
+<script type="text/javascript" async="" defer="" src="./Asynchronous Rest with Jetty-9 – Webtide_files/api.js" id="google-invisible-recaptcha-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/navigation.min.js" id="spacious-navigation-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/skip-link-focus-fix.js" id="spacious-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/spacious-custom.min.js" id="spacious-custom-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/jscripts-ftr2-min.js" id="wpss-jscripts-ftr-js"></script>
+<script type="text/javascript" src="./Asynchronous Rest with Jetty-9 – Webtide_files/wp-embed.min.js" id="wp-embed-js"></script>
+<script type="text/javascript" id="twitter-wjs-js-extra">
+/* <![CDATA[ */
+window.twttr=(function(w){t=w.twttr||{};t._e=[];t.ready=function(f){t._e.push(f);};return t;}(window));
+/* ]]> */
+</script>
+<script type="text/javascript" id="twitter-wjs" async="" defer="" src="./Asynchronous Rest with Jetty-9 – Webtide_files/widgets.js" charset="utf-8"></script>
+
+
+
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="./Asynchronous Rest with Jetty-9 – Webtide_files/widget_iframe.6e189c4f2b6d88c453045806323cdcf3.html" title="Twitter settings iframe" style="display: none;"></iframe><iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe" src="./Asynchronous Rest with Jetty-9 – Webtide_files/saved_resource.html"></iframe></body></html>
