@@ -1,0 +1,26 @@
+#navList{
+list-style:none;
+}
+.post{
+ font:14px/1.8 Georgia,Times New Roman,Times,sans-serif;
+line-height:200%;
+color:#000 !important;
+}
+
+#blogTitle{
+    display: none;
+    
+}
+#sidebar_links414273{
+display:none;
+}
+#home{
+    background-color: #F0EEF5 !important;
+}
+#navigator
+{
+background-color: #209E85 !important;
+    font:12px/1.5 Microsoft YaHei,Tahoma,Helvetica,'SimSun',sans-serif;
+border:1px solid #209E85 !important;
+}
+#topics{border:0px;}

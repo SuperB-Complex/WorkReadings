@@ -1,0 +1,3335 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://refactoring.guru/design-patterns/state -->
+<html lang="en" class=""><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Design Patterns: State in Java</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="alternate" href="https://refactoring.guru/design-patterns/state" hreflang="x-default">
+    <link rel="alternate" href="https://refactoring.guru/es/design-patterns/state" hreflang="es">
+    <link rel="alternate" href="https://refactoring.guru/fr/design-patterns/state" hreflang="fr">
+    <link rel="alternate" href="https://refactoring.guru/pl/design-patterns/state" hreflang="pl">
+    <link rel="alternate" href="https://refactoring.guru/pt-br/design-patterns/state" hreflang="pt-br">
+    <link rel="alternate" href="https://refactoring.guru/ru/design-patterns/state" hreflang="ru">
+    <link rel="alternate" href="https://refactoring.guru/uk/design-patterns/state" hreflang="uk">
+    <link rel="alternate" href="https://refactoringguru.cn/design-patterns/state" hreflang="zh">
+
+    <meta name="description" content="State is a behavioral design pattern that lets an object alter its behavior when its internal state changes. It appears as if the object changed its class.">
+
+    <link rel="canonical" href="https://refactoring.guru/design-patterns/state">
+
+    <link rel="icon" type="image/x-icon" href="https://refactoring.guru/favicon.ico">
+
+<script type="text/javascript" async="" src="./State_files/js"></script><script type="text/javascript" async="" src="./State_files/ec.js"></script><script async="" src="./State_files/analytics.js"></script><script type="application/ld+json">
+{"@context": "http://schema.org", "@graph": [{"@type":"Person","@id":"https://refactoring.guru/#founder","name":"Alexander Shvets"},{"@type":"Organization","@id":"https://refactoring.guru/#organization","name":"Refactoring.Guru","description":"Refactoring.Guru makes it easy for you to discover everything you need to know about refactoring, design patterns, SOLID principles, and other smart programming topics.","image":{"@type":"ImageObject","@id":"https://refactoring.guru/#organizationlogo","url":"https://refactoring.guru/images/content-public/logos/logo-plain.png","caption":"Refactoring.Guru"},"logo":{"@id":"https://refactoring.guru/#organizationlogo"},"founder":{"@id":"https://refactoring.guru/#founder"},"sameAs":["https://www.facebook.com/refactoring.guru","https://twitter.com/RefactoringGuru","https://github.com/RefactoringGuru"]},{"@type":"WebSite","@id":"https://refactoring.guru/#website","url":"https://refactoring.guru/","name":"Refactoring.Guru","description":"Refactoring.Guru makes it easy for you to discover everything you need to know about refactoring, design patterns, SOLID principles, and other smart programming topics.","author":{"@id":"https://refactoring.guru/#founder"},"publisher":{"@id":"https://refactoring.guru/#organization"},"copyrightYear":2014},{"@type":"WebPage","@id":"https://refactoring.guru/design-patterns/state#webpage","url":"https://refactoring.guru/design-patterns/state","inLanguage":"en","name":"State","description":"State is a behavioral design pattern that lets an object alter its behavior when its internal state changes. It appears as if the object changed its class.","isPartOf":{"@id":"https://refactoring.guru#website"},"breadcrumb":{"@id":"https://refactoring.guru/design-patterns/state#breadcrumb"},"primaryImageOfPage":{"@id":"https://refactoring.guru/design-patterns/state#primaryimage"},"image":{"@type":"ImageObject","@id":"https://refactoring.guru/design-patterns/state#primaryimage","url":"https://refactoring.guru/images/patterns/content/state/state-en-3x.png","width":1920,"height":1200}},{"@type":"Article","@id":"https://refactoring.guru/design-patterns/state#article","isPartOf":{"@id":"https://refactoring.guru/design-patterns/state#webpage"},"mainEntityOfPage":{"@id":"https://refactoring.guru/design-patterns/state#webpage"},"author":{"@id":"https://refactoring.guru#founder"},"publisher":{"@id":"https://refactoring.guru#organization"},"headline":"State","datePublished":"2020-01-01","dateModified":"2021-01-01","articleSection":"Design Patterns","image":{"@id":"https://refactoring.guru/design-patterns/state#primaryimage"}},{"@type":"BreadcrumbList","@id":"https://refactoring.guru/design-patterns/state#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://refactoring.guru"},{"@type":"ListItem","position":2,"name":"Design Patterns","item":"https://refactoring.guru/design-patterns"},{"@type":"ListItem","position":3,"name":"Behavioral Patterns","item":"https://refactoring.guru/design-patterns/behavioral-patterns"}]}] }
+</script>
+
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+
+<meta property="fb:app_id" content="666819623386327">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://refactoring.guru/images/refactoring/social/facebook-share-preview.png">
+
+<link rel="stylesheet" href="./State_files/public-packed.min.css">
+
+<link href="./State_files/css2" rel="stylesheet">
+<link href="./State_files/css2(1)" rel="stylesheet">
+<link rel="preload" href="https://refactoring.guru/fonts/fontello/fontawesome.woff2?49061734" as="font" type="font/woff2" crossorigin="">
+
+
+<script defer="" src="./State_files/public.min.js"></script>
+
+
+
+</head>
+<body class="locale-en announcement country-USA state" data-body_class="state" data-new-gr-c-s-check-loaded="14.997.0" data-gr-ext-installed="" style="margin-bottom: 264px;">
+
+<div class="body-holder">
+
+
+            <div class="announcement-block prom ga-triggered" data-id="DIDP-announcement" data-creative-id="en" data-position="top"><div class="announcement-block-inner">
+            <img src="./State_files/announcement-en-1.svg">
+                Hey, I have just reduced the price for all products. Let's prepare our programming skills for the post-COVID era. <a href="https://refactoring.guru/store">Check it out »</a>
+            <img src="./State_files/announcement-en-2.svg">
+        </div></div>
+    
+    <div class="cart-placeholder">
+    <div class="cart-block-container" style="display:none">
+        <div class="cart-block btn-group">
+            <a href="https://refactoring.guru/design-patterns/state#checkout" class="btn cart open-checkout">
+                <span class="cart-text"></span>&nbsp;<strong class="cart-total font-money"></strong>
+            </a><a href="https://refactoring.guru/design-patterns/state#checkout" class="btn btn-secondary checkout open-checkout"><i class="fa fa-shopping-cart" aria-hidden="true"></i> <span class="btn-text-span d-none d-sm-inline-block d-lg-none d-hg-inline-block"></span></a>
+        </div>
+    </div>
+</div>
+    <main role="main" class="main-content top-content center-content" data-page_class="">
+        
+    <div class="main-content-container center-content-container"><div class="pattern page text">
+<article>
+    
+<div class="breadcrumb ">
+    
+        
+        <a class="home" href="https://refactoring.guru/"><i class="fa fa-home" aria-hidden="true"></i></a>
+        
+    
+        
+        / <a class="type" href="https://refactoring.guru/design-patterns">Design Patterns</a>
+        
+    
+        
+        / <a class="type" href="https://refactoring.guru/design-patterns/behavioral-patterns">Behavioral Patterns</a>
+        
+    
+</div>
+    
+    <h1 class="title">State</h1>
+    <script type="text/javascript">
+        // Shorten examples titles for users.
+        var h1 = document.getElementsByTagName("H1")[0];
+        if (h1.offsetHeight > 160) {
+            h1.className += ' smaller';
+        }
+
+        // Small beautification for pattern examples.
+        var title = h1.innerHTML;
+        title = title.replace(/^(Java|C\+\+|C#|PHP|Python|Ruby|Swift|TypeScript|Go|Delphi): (.*)$/, '<strong>$1:</strong> $2');
+        h1.innerHTML = title;
+    </script>
+
+    
+
+
+    
+
+    <div class="section intent">
+<h2 id="intent"><i class="fa fa-flip-horizontal fa-comment-alt-dots" aria-hidden="true"></i> Intent</h2>
+<p><strong>State</strong> is a behavioral design pattern that lets an object alter its behavior when its internal state changes. It appears as if the object changed its&nbsp;class.</p>
+<figure class="image"><img src="./State_files/state-en.png" alt="State Design&amp;nbsp;Pattern" width="640" srcset="/images/patterns/content/state/state-en-2x.png 2x,/images/patterns/content/state/state-en-3x.png 3x"></figure>
+</div>
+<div class="section problem">
+<h2 id="problem"><i class="fa fa-frown" aria-hidden="true"></i> Problem</h2>
+<p>The State pattern is closely related to the concept of a <a href="https://en.wikipedia.org/wiki/Finite-state_machine">Finite-State Machine</a>.</p>
+<figure class="image"><img src="./State_files/problem1.png" alt="Finite-State Machine" width="320" srcset="/images/patterns/diagrams/state/problem1-2x.png 2x,/images/patterns/diagrams/state/problem1-3x.png 3x" loading="lazy"><figcaption>
+<p>Finite-State&nbsp;Machine.</p>
+</figcaption></figure>
+<p>The main idea is that, at any given moment, there’s a <em>finite</em> number of <em>states</em> which a program can be in. Within any unique state, the program behaves differently, and the program can be switched from one state to another instantaneously. However, depending on a current state, the program may or may not switch to certain other states. These switching rules, called <em>transitions</em>, are also finite and predetermined.</p>
+<p>You can also apply this approach to objects. Imagine that we have a <code>Document</code> class. A document can be in one of three states: <code>Draft</code>, <code>Moderation</code> and <code>Published</code>. The <code>publish</code> method of the document works a little bit differently in each state:</p>
+<ul>
+<li>In <code>Draft</code>, it moves the document to moderation.</li>
+<li>In <code>Moderation</code>, it makes the document public, but only if the current user is an administrator.</li>
+<li>In <code>Published</code>, it doesn’t do anything at all.</li>
+</ul>
+<figure class="image"><img src="./State_files/problem2-en.png" alt="Possible states of a document object" width="560" srcset="/images/patterns/diagrams/state/problem2-en-2x.png 2x,/images/patterns/diagrams/state/problem2-en-3x.png 3x" loading="lazy"><figcaption>
+<p>Possible states and transitions of a document&nbsp;object.</p>
+</figcaption></figure>
+<p>State machines are usually implemented with lots of conditional operators (<code>if</code> or <code>switch</code>) that select the appropriate behavior depending on the current state of the object. Usually, this “state” is just a set of values of the object’s fields. Even if you’ve never heard about finite-state machines before, you’ve probably implemented a state at least once. Does the following code structure ring a bell?</p>
+<figure class="code">
+<pre class="code cm-s-default CodeMirror" lang="pseudocode"><span class="cm-keyword">class</span> <span class="cm-def1">Document</span> <span class="cm-keyword">is</span>
+    <span class="cm-keyword">field</span> <span class="cm-def3">state</span><span class="cm-bracket">:</span> <span class="cm-variable">string</span>
+    <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">publish</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">switch</span> <span class="cm-bracket">(</span><span class="cm-variable">state</span><span class="cm-bracket">)</span>
+            <span class="cm-string">"</span><span class="cm-string">d</span><span class="cm-string">r</span><span class="cm-string">a</span><span class="cm-string">f</span><span class="cm-string">t</span><span class="cm-string">"</span><span class="cm-bracket">:</span>
+                <span class="cm-variable">state</span> <span class="cm-operator">=</span> <span class="cm-string">"</span><span class="cm-string">m</span><span class="cm-string">o</span><span class="cm-string">d</span><span class="cm-string">e</span><span class="cm-string">r</span><span class="cm-string">a</span><span class="cm-string">t</span><span class="cm-string">i</span><span class="cm-string">o</span><span class="cm-string">n</span><span class="cm-string">"</span>
+                <span class="cm-variable">break</span>
+            <span class="cm-string">"</span><span class="cm-string">m</span><span class="cm-string">o</span><span class="cm-string">d</span><span class="cm-string">e</span><span class="cm-string">r</span><span class="cm-string">a</span><span class="cm-string">t</span><span class="cm-string">i</span><span class="cm-string">o</span><span class="cm-string">n</span><span class="cm-string">"</span><span class="cm-bracket">:</span>
+                <span class="cm-keyword">if</span> <span class="cm-bracket">(</span><span class="cm-variable">currentUser</span>.<span class="cm-variable">role</span> <span class="cm-operator">=</span><span class="cm-operator">=</span> <span class="cm-string">'</span><span class="cm-string">a</span><span class="cm-string">d</span><span class="cm-string">m</span><span class="cm-string">i</span><span class="cm-string">n</span><span class="cm-string">'</span><span class="cm-bracket">)</span>
+                    <span class="cm-variable">state</span> <span class="cm-operator">=</span> <span class="cm-string">"</span><span class="cm-string">p</span><span class="cm-string">u</span><span class="cm-string">b</span><span class="cm-string">l</span><span class="cm-string">i</span><span class="cm-string">s</span><span class="cm-string">h</span><span class="cm-string">e</span><span class="cm-string">d</span><span class="cm-string">"</span>
+                <span class="cm-variable">break</span>
+            <span class="cm-string">"</span><span class="cm-string">p</span><span class="cm-string">u</span><span class="cm-string">b</span><span class="cm-string">l</span><span class="cm-string">i</span><span class="cm-string">s</span><span class="cm-string">h</span><span class="cm-string">e</span><span class="cm-string">d</span><span class="cm-string">"</span><span class="cm-bracket">:</span>
+                <span class="cm-doc">// Do nothing.</span>
+                <span class="cm-variable">break</span>
+    <span class="cm-comment">// ...</span>
+</pre>
+</figure>
+<p>The biggest weakness of a state machine based on conditionals reveals itself once we start adding more and more states and state-dependent behaviors to the <code>Document</code> class. Most methods will contain monstrous conditionals that pick the proper behavior of a method according to the current state. Code like this is very difficult to maintain because any change to the transition logic may require changing state conditionals in every method.</p>
+<p>The problem tends to get bigger as a project evolves. It’s quite difficult to predict all possible states and transitions at the design stage. Hence, a lean state machine built with a limited set of conditionals can grow into a bloated mess over time.</p>
+</div>
+<div class="section solution">
+<h2 id="solution"><i class="fa fa-smile-beam" aria-hidden="true"></i> Solution</h2>
+<p>The State pattern suggests that you create new classes for all possible states of an object and extract all state-specific behaviors into these classes.</p>
+<p>Instead of implementing all behaviors on its own, the original object, called <em>context</em>, stores a reference to one of the state objects that represents its current state, and delegates all the state-related work to that object.</p>
+<figure class="image"><img src="./State_files/solution-en.png" alt="Document delegates the work to a state object" width="490" srcset="/images/patterns/diagrams/state/solution-en-2x.png 2x,/images/patterns/diagrams/state/solution-en-3x.png 3x" loading="lazy"><figcaption>
+<p>Document delegates the work to a state&nbsp;object.</p>
+</figcaption></figure>
+<p>To transition the context into another state, replace the active state object with another object that represents that new state. This is possible only if all state classes follow the same interface and the context itself works with these objects through that interface.</p>
+<p>This structure may look similar to the <a href="https://refactoring.guru/design-patterns/strategy">Strategy</a> pattern, but there’s one key difference. In the State pattern, the particular states may be aware of each other and initiate transitions from one state to another, whereas strategies almost never know about each other.</p>
+</div>
+<div class="section analogy">
+<h2 id="analogy"><i class="fa fa-car-side" aria-hidden="true"></i> Real-World Analogy</h2>
+<p>The buttons and switches in your smartphone behave differently depending on the current state of the device:</p>
+<ul>
+<li>When the phone is unlocked, pressing buttons leads to executing various functions.</li>
+<li>When the phone is locked, pressing any button leads to the unlock screen.</li>
+<li>When the phone’s charge is low, pressing any button shows the charging screen.</li>
+</ul>
+</div>
+<div class="section structure-container">
+<h2 id="structure"><i class="fa fa-sitemap" aria-hidden="true"></i> Structure</h2>
+<div class="structure">
+<div class="struct-image1 struct-image">
+<figure class="image"><img class="structure-img-non-indexed d-none d-xl-block" src="./State_files/structure-en.png" alt="Structure of the State design pattern" width="540" srcset="/images/patterns/diagrams/state/structure-en-2x.png 2x,/images/patterns/diagrams/state/structure-en-3x.png 3x" loading="lazy"><img class="structure-img-indexed d-xl-none" src="./State_files/structure-en-indexed.png" alt="Structure of the State design pattern" width="540" srcset="/images/patterns/diagrams/state/structure-en-indexed-2x.png 2x,/images/patterns/diagrams/state/structure-en-indexed-3x.png 3x" loading="lazy"></figure>
+</div>
+<ol><li class="struct-li1">
+<p><strong>Context</strong> stores a reference to one of the concrete state objects and delegates to it all state-specific work. The context communicates with the state object via the state interface. The context exposes a setter for passing it a new state object.</p>
+</li>
+<li class="struct-li2">
+<p>The <strong>State</strong> interface declares the state-specific methods. These methods should make sense for all concrete states because you don’t want some of your states to have useless methods that will never be called.</p>
+</li>
+<li class="struct-li3">
+<p><strong>Concrete States</strong> provide their own implementations for the state-specific methods. To avoid duplication of similar code across multiple states, you may provide intermediate abstract classes that encapsulate some common behavior.</p>
+<p>State objects may store a backreference to the context object. Through this reference, the state can fetch any required info from the context object, as well as initiate state transitions.</p>
+</li>
+<li class="struct-li4">
+<p>Both context and concrete states can set the next state of the context and perform the actual state transition by replacing the state object linked to the context.</p>
+</li></ol>
+<style structure="" type="text/css">
+@media (min-width: 1200px) {
+.structure {
+margin: 0;
+width: auto;
+height: 560px;
+}
+
+.struct-image1 {
+left: 60px;
+top: 160px;
+}
+
+.struct-li1 {
+left: 0px;
+top: 0px;
+width: 310px;
+height: 150px;
+}
+
+.struct-li2 {
+left: 340px;
+top: 0px;
+width: 260px;
+height: 150px;
+}
+
+.struct-li3 {
+left: 620px;
+top: 80px;
+width: 240px;
+height: 330px;
+}
+
+.struct-li4 {
+left: 620px;
+top: 430px;
+width: 240px;
+height: 130px;
+}
+}
+
+</style>
+</div></div>
+<div class="section pseudocode">
+<h2 id="pseudocode"><i class="fa fa-hashtag" aria-hidden="true"></i> Pseudocode</h2>
+<p>In this example, the <strong>State</strong> pattern lets the same controls of the media player behave differently, depending on the current playback state.</p>
+<figure class="image"><img src="./State_files/example.png" alt="Structure of the State pattern example" width="590" srcset="/images/patterns/diagrams/state/example-2x.png 2x,/images/patterns/diagrams/state/example-3x.png 3x" loading="lazy"><figcaption>
+<p>Example of changing object behavior with state&nbsp;objects.</p>
+</figcaption></figure>
+<p>The main object of the player is always linked to a state object that performs most of the work for the player. Some actions replace the current state object of the player with another, which changes the way the player reacts to user interactions.</p>
+<figure class="code">
+<pre class="code cm-s-default CodeMirror" lang="pseudocode"><span class="cm-doc">// The AudioPlayer class acts as a context. It also maintains a</span>
+<span class="cm-doc">// reference to an instance of one of the state classes that</span>
+<span class="cm-doc">// represents the current state of the audio player.</span>
+<span class="cm-keyword">class</span> <span class="cm-def1">AudioPlayer</span> <span class="cm-keyword">is</span>
+    <span class="cm-keyword">field</span> <span class="cm-def3">state</span><span class="cm-bracket">:</span> <span class="cm-variable">State</span>
+    <span class="cm-keyword">field</span> <span class="cm-def3">UI</span>, <span class="cm-def3">volume</span>, <span class="cm-def3">playlist</span>, <span class="cm-def3">currentSong</span>
+
+    <span class="cm-keyword">constructor</span> <span class="cm-def3">AudioPlayer</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-atom">this</span>.<span class="cm-variable">state</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">ReadyState</span><span class="cm-bracket">(</span><span class="cm-atom">this</span><span class="cm-bracket">)</span>
+
+        <span class="cm-doc">// Context delegates handling user input to a state</span>
+        <span class="cm-doc">// object. Naturally, the outcome depends on what state</span>
+        <span class="cm-doc">// is currently active, since each state can handle the</span>
+        <span class="cm-doc">// input differently.</span>
+        <span class="cm-variable">UI</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">UserInterface</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">UI</span>.<span class="cm-variable">lockButton</span>.<span class="cm-variable">onClick</span><span class="cm-bracket">(</span><span class="cm-atom">this</span>.<span class="cm-variable">clickLock</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">UI</span>.<span class="cm-variable">playButton</span>.<span class="cm-variable">onClick</span><span class="cm-bracket">(</span><span class="cm-atom">this</span>.<span class="cm-variable">clickPlay</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">UI</span>.<span class="cm-variable">nextButton</span>.<span class="cm-variable">onClick</span><span class="cm-bracket">(</span><span class="cm-atom">this</span>.<span class="cm-variable">clickNext</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">UI</span>.<span class="cm-variable">prevButton</span>.<span class="cm-variable">onClick</span><span class="cm-bracket">(</span><span class="cm-atom">this</span>.<span class="cm-variable">clickPrevious</span><span class="cm-bracket">)</span>
+
+    <span class="cm-doc">// Other objects must be able to switch the audio player's</span>
+    <span class="cm-doc">// active state.</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">changeState</span><span class="cm-bracket">(</span><span class="cm-variable">state</span><span class="cm-bracket">:</span> <span class="cm-variable">State</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-atom">this</span>.<span class="cm-variable">state</span> <span class="cm-operator">=</span> <span class="cm-variable">state</span>
+
+    <span class="cm-doc">// UI methods delegate execution to the active state.</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">state</span>.<span class="cm-variable">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">state</span>.<span class="cm-variable">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">state</span>.<span class="cm-variable">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">state</span>.<span class="cm-variable">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+
+    <span class="cm-doc">// A state may call some service methods on the context.</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">startPlayback</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">stopPlayback</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">nextSong</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">previousSong</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">fastForward</span><span class="cm-bracket">(</span><span class="cm-variable">time</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">rewind</span><span class="cm-bracket">(</span><span class="cm-variable">time</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-comment">// ...</span>
+
+
+<span class="cm-doc">// The base state class declares methods that all concrete</span>
+<span class="cm-doc">// states should implement and also provides a backreference to</span>
+<span class="cm-doc">// the context object associated with the state. States can use</span>
+<span class="cm-doc">// the backreference to transition the context to another state.</span>
+<span class="cm-keyword">abstract class</span> <span class="cm-def1">State</span> <span class="cm-keyword">is</span>
+    <span class="cm-keyword">protected</span> <span class="cm-keyword">field</span> <span class="cm-def3">player</span><span class="cm-bracket">:</span> <span class="cm-variable">AudioPlayer</span>
+
+    <span class="cm-doc">// Context passes itself through the state constructor. This</span>
+    <span class="cm-doc">// may help a state fetch some useful context data if it's</span>
+    <span class="cm-doc">// needed.</span>
+    <span class="cm-keyword">constructor</span> <span class="cm-def3">State</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-atom">this</span>.<span class="cm-variable">player</span> <span class="cm-operator">=</span> <span class="cm-variable">player</span>
+
+    <span class="cm-keyword">abstract</span> <span class="cm-keyword">method</span> <span class="cm-def3">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">abstract</span> <span class="cm-keyword">method</span> <span class="cm-def3">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">abstract</span> <span class="cm-keyword">method</span> <span class="cm-def3">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+    <span class="cm-keyword">abstract</span> <span class="cm-keyword">method</span> <span class="cm-def3">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+
+
+<span class="cm-doc">// Concrete states implement various behaviors associated with a</span>
+<span class="cm-doc">// state of the context.</span>
+<span class="cm-keyword">class</span> <span class="cm-def1">LockedState</span> <span class="cm-keyword">extends</span> <span class="cm-def2">State</span> <span class="cm-keyword">is</span>
+
+    <span class="cm-doc">// When you unlock a locked player, it may assume one of two</span>
+    <span class="cm-doc">// states.</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-keyword">if</span> <span class="cm-bracket">(</span><span class="cm-variable">player</span>.<span class="cm-variable">playing</span><span class="cm-bracket">)</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">PlayingState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+        <span class="cm-keyword">else</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">ReadyState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-doc">// Locked, so do nothing.</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-doc">// Locked, so do nothing.</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-doc">// Locked, so do nothing.</span>
+
+
+<span class="cm-doc">// They can also trigger state transitions in the context.</span>
+<span class="cm-keyword">class</span> <span class="cm-def1">ReadyState</span> <span class="cm-keyword">extends</span> <span class="cm-def2">State</span> <span class="cm-keyword">is</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">LockedState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">startPlayback</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">PlayingState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">nextSong</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">previousSong</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+
+
+<span class="cm-keyword">class</span> <span class="cm-def1">PlayingState</span> <span class="cm-keyword">extends</span> <span class="cm-def2">State</span> <span class="cm-keyword">is</span>
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickLock</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">LockedState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPlay</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">stopPlayback</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+        <span class="cm-variable">player</span>.<span class="cm-variable">changeState</span><span class="cm-bracket">(</span><span class="cm-keyword">new</span> <span class="cm-variable">ReadyState</span><span class="cm-bracket">(</span><span class="cm-variable">player</span><span class="cm-bracket">)</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickNext</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-keyword">if</span> <span class="cm-bracket">(</span><span class="cm-variable">event</span>.<span class="cm-variable">doubleclick</span><span class="cm-bracket">)</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">nextSong</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+        <span class="cm-keyword">else</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">fastForward</span><span class="cm-bracket">(</span><span class="cm-number">5</span><span class="cm-bracket">)</span>
+
+    <span class="cm-keyword">method</span> <span class="cm-def3">clickPrevious</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span> <span class="cm-keyword">is</span>
+        <span class="cm-keyword">if</span> <span class="cm-bracket">(</span><span class="cm-variable">event</span>.<span class="cm-variable">doubleclick</span><span class="cm-bracket">)</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">previous</span><span class="cm-bracket">(</span><span class="cm-bracket">)</span>
+        <span class="cm-keyword">else</span>
+            <span class="cm-variable">player</span>.<span class="cm-variable">rewind</span><span class="cm-bracket">(</span><span class="cm-number">5</span><span class="cm-bracket">)</span>
+</pre>
+</figure>
+</div>
+<div class="section applicability-container">
+<h2 id="applicability"><i class="fa fa-lightbulb-on" aria-hidden="true"></i> Applicability</h2>
+<div class="applicability">
+<div class="applicability-problem">
+<p><i class="fa fa-fw fa-bug" aria-hidden="true"></i> Use the State pattern when you have an object that behaves differently depending on its current state, the number of states is enormous, and the state-specific code changes frequently.</p>
+</div><div class="applicability-solution">
+<p><i class="fa fa-fw fa-bolt" aria-hidden="true"></i> The pattern suggests that you extract all state-specific code into a set of distinct classes. As a result, you can add new states or change existing ones independently of each other, reducing the maintenance cost.</p>
+</div>
+<div class="applicability-problem">
+<p><i class="fa fa-fw fa-bug" aria-hidden="true"></i> Use the pattern when you have a class polluted with massive conditionals that alter how the class behaves according to the current values of the class’s fields.</p>
+</div><div class="applicability-solution">
+<p><i class="fa fa-fw fa-bolt" aria-hidden="true"></i> The State pattern lets you extract branches of these conditionals into methods of corresponding state classes. While doing so, you can also clean temporary fields and helper methods involved in state-specific code out of your main class.</p>
+</div>
+<div class="applicability-problem">
+<p><i class="fa fa-fw fa-bug" aria-hidden="true"></i> Use State when you have a lot of duplicate code across similar states and transitions of a condition-based state machine.</p>
+</div><div class="applicability-solution">
+<p><i class="fa fa-fw fa-bolt" aria-hidden="true"></i> The State pattern lets you compose hierarchies of state classes and reduce duplication by extracting common code into abstract base classes.</p>
+</div>
+</div></div>
+<div class="section checklist">
+<h2 id="checklist"><i class="fa fa-clipboard-list-check" aria-hidden="true"></i> How to Implement</h2>
+<ol>
+<li>
+<p>Decide what class will act as the context. It could be an existing class which already has the state-dependent code; or a new class, if the state-specific code is distributed across multiple classes.</p>
+</li>
+<li>
+<p>Declare the state interface. Although it may mirror all the methods declared in the context, aim only for those that may contain state-specific behavior.</p>
+</li>
+<li>
+<p>For every actual state, create a class that derives from the state interface. Then go over the methods of the context and extract all code related to that state into your newly created class.</p>
+<p>While moving the code to the state class, you might discover that it depends on private members of the context. There are several workarounds:</p>
+<ul>
+<li>Make these fields or methods public.</li>
+<li>Turn the behavior you’re extracting into a public method in the context and call it from the state class. This way is ugly but quick, and you can always fix it later.</li>
+<li>Nest the state classes into the context class, but only if your programming language supports nesting classes.</li>
+</ul>
+</li>
+<li>
+<p>In the context class, add a reference field of the state interface type and a public setter that allows overriding the value of that field.</p>
+</li>
+<li>
+<p>Go over the method of the context again and replace empty state conditionals with calls to corresponding methods of the state object.</p>
+</li>
+<li>
+<p>To switch the state of the context, create an instance of one of the state classes and pass it to the context. You can do this within the context itself, or in various states, or in the client. Wherever this is done, the class becomes dependent on the concrete state class that it instantiates.</p>
+</li>
+</ol>
+</div>
+<div class="section pros-cons">
+<h2 id="pros-cons"><i class="fa fa-balance-scale" aria-hidden="true"></i> Pros and Cons</h2>
+<div class="row"><div class="col-sm-6">
+<ul>
+<li>
+<i class="fa fa-fw fa-check" aria-hidden="true"></i> <em>Single Responsibility Principle</em>. Organize the code related to particular states into separate classes.</li>
+<li>
+<i class="fa fa-fw fa-check" aria-hidden="true"></i> <em>Open/Closed Principle</em>. Introduce new states without changing existing state classes or the context.</li>
+<li>
+<i class="fa fa-fw fa-check" aria-hidden="true"></i> Simplify the code of the context by eliminating bulky state machine conditionals.</li>
+</ul>
+</div><div class="col-sm-6">
+<ul>
+<li>
+<i class="fa fa-fw fa-times" aria-hidden="true"></i> Applying the pattern can be overkill if a state machine has only a few states or rarely changes.</li>
+</ul>
+</div></div></div>
+<div class="section relations">
+<h2 id="relations"><i class="fa fa-exchange-alt" aria-hidden="true"></i> Relations with Other Patterns</h2>
+<ul>
+<li>
+<p><a href="https://refactoring.guru/design-patterns/bridge">Bridge</a>, <a href="https://refactoring.guru/design-patterns/state">State</a>, <a href="https://refactoring.guru/design-patterns/strategy">Strategy</a> (and to some degree <a href="https://refactoring.guru/design-patterns/adapter">Adapter</a>) have very similar structures. Indeed, all of these patterns are based on composition, which is delegating work to other objects. However, they all solve different problems. A pattern isn’t just a recipe for structuring your code in a specific way. It can also communicate to other developers the problem the pattern solves.</p>
+</li>
+<li>
+<p><a href="https://refactoring.guru/design-patterns/state">State</a> can be considered as an extension of <a href="https://refactoring.guru/design-patterns/strategy">Strategy</a>. Both patterns are based on composition: they change the behavior of the context by delegating some work to helper objects. <em>Strategy</em> makes these objects completely independent and unaware of each other. However, <em>State</em> doesn’t restrict dependencies between concrete states, letting them alter the state of the context at will.</p>
+</li>
+</ul>
+</div>
+<div class="section implementations">
+<h2 id="implementations"><i class="fa fa-code" aria-hidden="true"></i> Code Examples</h2>
+<p><a href="https://refactoring.guru/design-patterns/state/java/example" title="Design Patterns: State in Java" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/java.svg" alt="Design Patterns: State in Java"></a>
+<a href="https://refactoring.guru/design-patterns/state/csharp/example" title="Design Patterns: State in C#" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/csharp.svg" alt="Design Patterns: State in C#"></a>
+<a href="https://refactoring.guru/design-patterns/state/cpp/example" title="Design Patterns: State in C++" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/cpp.svg" alt="Design Patterns: State in C++"></a>
+<a href="https://refactoring.guru/design-patterns/state/php/example" title="Design Patterns: State in PHP" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/php.svg" alt="Design Patterns: State in PHP"></a>
+<a href="https://refactoring.guru/design-patterns/state/python/example" title="Design Patterns: State in Python" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/python.svg" alt="Design Patterns: State in Python"></a>
+<a href="https://refactoring.guru/design-patterns/state/ruby/example" title="Design Patterns: State in Ruby" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/ruby.svg" alt="Design Patterns: State in Ruby"></a>
+<a href="https://refactoring.guru/design-patterns/state/swift/example" title="Design Patterns: State in Swift" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/swift.svg" alt="Design Patterns: State in Swift"></a>
+<a href="https://refactoring.guru/design-patterns/state/typescript/example" title="Design Patterns: State in TypeScript" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/typescript.svg" alt="Design Patterns: State in TypeScript"></a>
+<a href="https://refactoring.guru/design-patterns/state/go/example" title="Design Patterns: State in Go" class="prog-lang-link"><img width="53" height="53" loading="lazy" src="./State_files/go.svg" alt="Design Patterns: State in Go"></a></p>
+</div>
+
+
+    
+
+
+
+<div class="banner-set" id="book-promo">
+    <div class="prom banner-content banner-bg banner-striped banner-with-image" data-id="DP: 1: Support our free website and own the eBook!" data-creative-id="standard-en" data-position="content_bottom" style="display: none;">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <img width="200" height="200" loading="lazy" src="./State_files/patterns-book-banner-3.png" srcset="/images/patterns/banners/patterns-book-banner-3-2x.png 2x, /images/patterns/banners/patterns-book-banner-3-3x.png 3x">
+            </a>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Support our free website and own the eBook!</h3>
+            <ul style="font-size: 14px;">
+                <li>22 design patterns and 8 principles explained in depth.</li>
+                <li>409 well-structured, easy to read, jargon-free pages.</li>
+                <li>225 clear and helpful illustrations and diagrams.</li>
+                <li>An archive with code examples in 9 languages.</li>
+                <li>All devices supported: PDF/EPUB/MOBI/KFX formats.</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+
+
+    <div class="prom banner-content banner-bg banner-striped banner-with-image" data-id="DP: 2: Why buy the best Design Pattern eBook?" data-creative-id="standard-en" data-position="content_bottom" style="display: none;">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <video id="banner-zzz" loop="" muted="" playsinline="" width="200" height="200">
+                    <source src="/images/refactoring/banners/tired-of-reading-banner-1x.mp4" type="video/mp4">
+                    <source src="/images/refactoring/banners/tired-of-reading-banner.png" type="image/png">
+                    Your browser does not support HTML video.
+                </video>
+            </a>
+            <script>
+                if (/CPU (?:iPhone )?OS [1-9]_/.test(navigator.userAgent)) {
+                    // Don't autoplay on old iOS, since it doesn not support playsinline.
+                }
+                else {
+                    document.getElementById('banner-zzz').play();
+                }
+            </script>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Why buy the best Design Pattern eBook?</h3>
+            <ul style="font-size: 14px;">
+                <li>Let's admit: it's no fun to read a website!</li>
+                <li>Do something productive during commutes.</li>
+                <li>Learn something new while relaxing on the couch.</li>
+                <li>Packed with useful OOP pseudocode examples.</li>
+                <li>All devices supported: PDF/EPUB/MOBI/KFX formats.</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+
+
+    <div class="prom banner-content banner-bg banner-striped banner-with-image" data-id="DP: 3: Why should you take this eBook on commutes?" data-creative-id="standard-en" data-position="content_bottom" style="display: none;">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <img width="200" height="200" loading="lazy" src="./State_files/patterns-book-banner-1-b.png" srcset="/images/patterns/banners/patterns-book-banner-1-b-2x.png 2x, /images/patterns/banners/patterns-book-banner-1-b-3x.png 3x">
+            </a>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Why should you take this eBook on commutes?</h3>
+            <ul style="font-size: 14px;">
+                <li>You'll learn something useful on the way to work.</li>
+                <li>No need for the Internet: always handy and searchable.</li>
+                <li>Easy on your eyes with a choice of reading modes.</li>
+                <li>One less thing to carry and never leave it behind.</li>
+                <li>All devices supported: PDF/EPUB/MOBI/KFX formats.</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+
+
+    <div class="prom banner-content banner-bg banner-striped banner-with-image banner-night-mode ga-triggered" data-id="DP: 4: Why should you read this eBook in bed?" data-creative-id="standard-en" data-position="content_bottom">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <img width="200" height="200" loading="lazy" src="./State_files/patterns-book-banner-4.png" srcset="/images/patterns/banners/patterns-book-banner-4-2x.png 2x, /images/patterns/banners/patterns-book-banner-4-3x.png 3x">
+            </a>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Why should you read this eBook in bed?</h3>
+            <ul style="font-size: 14px;">
+                <li>It's more intellectually stimulating than Netflix.</li>
+                <li>It's more relaxing than other alternatives.</li>
+                <li>You'll do something productive for a change!</li>
+                <li>Easy on your eyes with a night-reading mode.</li>
+                <li>All devices supported: PDF/EPUB/MOBI formats.</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+
+
+    <div class="prom banner-content banner-bg banner-striped banner-with-image" data-id="DP: 5: Why buy the best design pattern eBook ever?" data-creative-id="standard-en" data-position="content_bottom" style="display: none;">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <img width="200" height="200" loading="lazy" src="./State_files/patterns-book-banner-2.png" srcset="/images/patterns/banners/patterns-book-banner-2-2x.png 2x, /images/patterns/banners/patterns-book-banner-2-3x.png 3x">
+            </a>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Why buy the best design pattern eBook ever?</h3>
+            <ul style="font-size: 14px;">
+                <li><b>Beginners:</b> Learn basic patterns and how they work!</li>
+                <li><b>Experts:</b> Use it as a handy, searchable reference!</li>
+                <li><b>Language agnostic:</b> Examples in PHP, C#, Java &amp; more!</li>
+                <li>22 design patterns and 8 principles explained in depth.</li>
+                <li>409 well-structured, easy to read, jargon-free pages.</li>
+                <li>225 clear and helpful illustrations and diagrams.</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+
+
+    <div class="prom banner-content banner-bg banner-striped banner-with-image" data-id="DP: 6: Why do you need to know about Design Patterns?" data-creative-id="standard-en" data-position="content_bottom" style="display: none;">
+        <div class="banner-image">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <img width="150" height="205" loading="lazy" src="./State_files/web-cover-en.png" srcset="/images/patterns/book/web-cover-en-2x.png 2x, /images/patterns/book/web-cover-en-3x.png 3x">
+            </a>
+        </div>
+
+        <div class="banner-text">
+            <h3 class="title">Why do you need to know about Design Patterns?</h3>
+            <ul style="font-size: 14px;">
+                <li><b>Ace interviews and reviews.</b> Patterns always come up.</li>
+                <li>Get that raise and promotion you so richly deserve!</li>
+                <li><b>Extend your toolkit</b> with proven, problem-free code samples.</li>
+                <li>Customize ready-to-go solutions. Don’t reinvent the wheel!</li>
+                <li><b>Communicate better</b> with colleagues without long explanations.</li>
+                <li>Just name the design pattern. Get the glory without a sweat!</li>
+            </ul>
+            <a class="btn btn-secondary" href="https://refactoring.guru/design-patterns/book"><i class="fa fa-book" aria-hidden="true"></i> Learn more...</a>
+        </div>
+    </div>
+</div>
+
+</article>
+
+
+<nav class="prev-next">
+    
+    <div class="next">
+        <h4>Read next</h4>
+        <a rel="next" href="https://refactoring.guru/design-patterns/strategy" class="btn btn-primary">Strategy&nbsp;<span class="fa fa-arrow-right"></span></a>
+    </div>
+    
+    
+    <div class="prev">
+        <h4>Return</h4>
+        <a rel="prev" href="https://refactoring.guru/design-patterns/observer" class="btn btn-default"><span class="fa fa-arrow-left"></span>&nbsp;Observer</a>
+    </div>
+    
+</nav>
+
+</div>
+
+<aside class="feature affix-top">
+    
+
+<div class="prom banner-sidebar ga-triggered" data-id="DP: Sidebar" data-creative-id="standard-sidebar-en" data-position="sidebar">
+    <div class="banner-inner">
+        <div class="image3d-book-right">
+            <div class="image3d-cover" style="background: #0b3752;">
+                <a href="https://refactoring.guru/design-patterns/book">
+                    <img width="250" height="375" loading="lazy" src="./State_files/web-cover-en.png" srcset="/images/patterns/book/web-cover-en-2x.png 2x, /images/patterns/book/web-cover-en-3x.png 3x">
+                </a>
+            </div>
+        </div>
+        <div style="margin-top: 1rem">
+            <p class="text-center">This article is a part of our eBook<br><strong>Dive Into Design Patterns</strong>.</p>
+            <a href="https://refactoring.guru/design-patterns/book" class="btn btn-secondary btn-block">
+                <i class="fa fa-book" aria-hidden="true"></i> Learn more...
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+</aside></div></main>
+
+    <nav class="navigation" role="navigation">
+    <div class="navigation-container">
+        <a href="https://refactoring.guru/design-patterns/state#menu" class="navigation-toggle"><i class="fa fa-bars"></i></a>
+        <a class="navigation-brand" href="https://refactoring.guru/">
+            <img alt="Refactoring.Guru" src="./State_files/logo-covid-mobile.png" srcset="https://refactoring.guru/images/content-public/logos/logo-covid-mobile-2x.png 2x, https://refactoring.guru/images/content-public/logos/logo-covid-mobile-3x.png 3x">
+        </a>
+        <div class="social-likes-block social-likes social-likes_visible social-likes_ready" data-url="https://refactoring.guru">
+    <div data-service="facebook" class="social-likes__widget social-likes__widget_facebook" title="Share on Facebook"><span class="social-likes__button social-likes__button_facebook"><span class="social-likes__icon social-likes__icon_facebook"></span>Facebook</span><span class="social-likes__counter social-likes__counter_facebook social-likes__counter_empty"></span></div>
+        <div data-service="twitter" class="social-likes__widget social-likes__widget_twitter" title="Share on Twitter"><span class="social-likes__button social-likes__button_twitter"><span class="social-likes__icon social-likes__icon_twitter"></span>Twitter</span></div>
+</div>        <ul class="navigation-menu">
+                        <li class="dropdown d-lg-none">
+                <a class="dropdown-toggle" id="dropdownLanguage" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-globe" aria-hidden="true"></i> <span class="caption d-none d-xl-inline-block">Language</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLanguage">
+                                                                                                        <a href="https://refactoring.guru/design-patterns/state" class="dropdown-item locale-link active" data-locale="en" title="English">English</a>
+                                                                                                                <a href="https://refactoring.guru/es/design-patterns/state" class="dropdown-item locale-link " data-locale="es" title="Español">Español</a>
+                                                                                                                <a href="https://refactoring.guru/fr/design-patterns/state" class="dropdown-item locale-link " data-locale="fr" title="Français">Français</a>
+                                                                                                                <a href="https://refactoring.guru/pl/design-patterns/state" class="dropdown-item locale-link " data-locale="pl" title="Polski">Polski</a>
+                                                                                                                <a href="https://refactoring.guru/pt-br/design-patterns/state" class="dropdown-item locale-link " data-locale="pt-br" title="Português Brasileiro">Português Brasileiro</a>
+                                                                                                                <a href="https://refactoring.guru/ru/design-patterns/state" class="dropdown-item locale-link " data-locale="ru" title="Русский">Русский</a>
+                                                                                                                <a href="https://refactoring.guru/uk/design-patterns/state" class="dropdown-item locale-link " data-locale="uk" title="Українська">Українська</a>
+                                                                                                                <a href="https://refactoringguru.cn/design-patterns/state" class="dropdown-item locale-link " data-locale="zh" title="中文">中文</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+            </li>
+                        <li class="nav-contact">
+                <a class="userecho-private" href="https://feedback.refactoring.guru/?lang=en&amp;show_feedback_form_private=true" rel="nofollow" title="Contact us">
+                    <i class="fa fa-envelope"></i> <span class="caption d-none d-xl-inline-block">Contact us</span>
+                </a>
+            </li>
+                                                <li class="nav-login">
+                        <a href="https://refactoring.guru/login" title="Log in"><i class="fa fa-user"></i> <span class="caption d-none d-xl-inline-block">Log in</span></a>
+                    </li>
+                                    </ul>
+    </div>
+</nav>
+    <aside class="sidebar main-menu nano os-host os-theme-red os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition"><div class="os-resize-observer-host observed"><div class="os-resize-observer" style="left: 0px; right: auto;"></div></div><div class="os-size-auto-observer observed" style="height: calc(100% + 1px); float: left;"><div class="os-resize-observer"></div></div><div class="os-content-glue" style="margin: 0px; width: 249px; height: 810px;"></div><div class="os-padding"><div class="os-viewport os-viewport-native-scrollbars-invisible" style="overflow-y: scroll;"><div class="os-content" style="padding: 0px; height: 100%; width: 100%;">
+    <a href="https://refactoring.guru/design-patterns/state#menu-close" class="navigation-toggle"><i class="fa fa-fw fa-times"></i></a>
+    <div class="nano-content">
+                    <div class="main-menu-lang d-none d-lg-flex main-menu-lang-count-8">
+                                                                                        <a href="https://refactoring.guru/design-patterns/state" class="locale-link active" data-locale="en" title="English"><span class="d-lg-none">English</span><span class="d-none d-lg-inline">English</span></a>
+                                                                                                <a href="https://refactoring.guru/es/design-patterns/state" class="locale-link " data-locale="es" title="Español"><span class="d-lg-none">Español</span><span class="d-none d-lg-inline">Español</span></a>
+                                                                                                <a href="https://refactoring.guru/fr/design-patterns/state" class="locale-link " data-locale="fr" title="Français"><span class="d-lg-none">Français</span><span class="d-none d-lg-inline">Français</span></a>
+                                                                                                <a href="https://refactoring.guru/pl/design-patterns/state" class="locale-link " data-locale="pl" title="Polski"><span class="d-lg-none">Polski</span><span class="d-none d-lg-inline">Polski</span></a>
+                                                                                                <a href="https://refactoring.guru/pt-br/design-patterns/state" class="locale-link " data-locale="pt-br" title="Português Brasileiro"><span class="d-lg-none">Português Brasileiro</span><span class="d-none d-lg-inline">Português-Br</span></a>
+                                                                                                <a href="https://refactoring.guru/ru/design-patterns/state" class="locale-link " data-locale="ru" title="Русский"><span class="d-lg-none">Русский</span><span class="d-none d-lg-inline">Русский</span></a>
+                                                                                                <a href="https://refactoring.guru/uk/design-patterns/state" class="locale-link " data-locale="uk" title="Українська"><span class="d-lg-none">Українська</span><span class="d-none d-lg-inline">Українська</span></a>
+                                                                                                <a href="https://refactoringguru.cn/design-patterns/state" class="locale-link " data-locale="zh" title="中文"><span class="d-lg-none">中文</span><span class="d-none d-lg-inline">中文</span></a>
+                                                                                                                                                                                                                                                                                                                                                                                        </div>
+        
+        <a class="menu-brand" href="https://refactoring.guru/">
+                            <img width="200" height="241" loading="lazy" alt="Refactoring.Guru" src="./State_files/logo-covid.png" srcset="https://refactoring.guru/images/content-public/logos/logo-covid-2x.png 2x, https://refactoring.guru/images/content-public/logos/logo-covid-3x.png 3x">
+                    </a>
+
+        <div class="menu-container" style="position: relative">
+                        <ul class="menu-list ready">
+            
+                
+    
+        <li class="featured">
+            <a href="https://refactoring.guru/store">
+                <i class="fa fa-fw fa-star" aria-hidden="true"></i> Premium Content
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="featured menu-fs15">
+            <a href="https://refactoring.guru/design-patterns/book">
+                <i class="fa fa-fw fa-book" aria-hidden="true"></i> Design Patterns eBook
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="featured menu-fs15">
+            <a href="https://refactoring.guru/refactoring/course">
+                <i class="fa fa-fw fa-graduation-cap" aria-hidden="true"></i> Refactoring Course
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring">
+                <i class="fa fa-fw fa-scissors" aria-hidden="true"></i> Refactoring
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/what-is-refactoring">
+                What is Refactoring
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/what-is-refactoring">
+                Clean code
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/technical-debt">
+                Technical debt
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/when">
+                When to refactor
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/how-to">
+                How to refactor
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/catalog">
+                Catalog
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells">
+                Code Smells
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/bloaters">
+                Bloaters
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/long-method">
+                Long Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/large-class">
+                Large Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/primitive-obsession">
+                Primitive Obsession
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/long-parameter-list">
+                Long Parameter List
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/data-clumps">
+                Data Clumps
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/oo-abusers">
+                Object-Orientation Abusers
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/switch-statements">
+                Switch Statements
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/temporary-field">
+                Temporary Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/refused-bequest">
+                Refused Bequest
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/alternative-classes-with-different-interfaces">
+                Alternative Classes with Different Interfaces
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/change-preventers">
+                Change Preventers
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/divergent-change">
+                Divergent Change
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/shotgun-surgery">
+                Shotgun Surgery
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/parallel-inheritance-hierarchies">
+                Parallel Inheritance Hierarchies
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/dispensables">
+                Dispensables
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/comments">
+                Comments
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/duplicate-code">
+                Duplicate Code
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/lazy-class">
+                Lazy Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/data-class">
+                Data Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/dead-code">
+                Dead Code
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/speculative-generality">
+                Speculative Generality
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/couplers">
+                Couplers
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/feature-envy">
+                Feature Envy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/inappropriate-intimacy">
+                Inappropriate Intimacy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/message-chains">
+                Message Chains
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/middle-man">
+                Middle Man
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/smells/other">
+                Other Smells
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/smells/incomplete-library-class">
+                Incomplete Library Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques">
+                Refactorings
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/composing-methods">
+                Composing Methods
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-method">
+                Extract Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/inline-method">
+                Inline Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-variable">
+                Extract Variable
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/inline-temp">
+                Inline Temp
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-temp-with-query">
+                Replace Temp with Query
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/split-temporary-variable">
+                Split Temporary Variable
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/remove-assignments-to-parameters">
+                Remove Assignments to Parameters
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-method-with-method-object">
+                Replace Method with Method Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/substitute-algorithm">
+                Substitute Algorithm
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/moving-features-between-objects">
+                Moving Features between Objects
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/move-method">
+                Move Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/move-field">
+                Move Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-class">
+                Extract Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/inline-class">
+                Inline Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/hide-delegate">
+                Hide Delegate
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/remove-middle-man">
+                Remove Middle Man
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/introduce-foreign-method">
+                Introduce Foreign Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/introduce-local-extension">
+                Introduce Local Extension
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/organizing-data">
+                Organizing Data
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/self-encapsulate-field">
+                Self Encapsulate Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-data-value-with-object">
+                Replace Data Value with Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/change-value-to-reference">
+                Change Value to Reference
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/change-reference-to-value">
+                Change Reference to Value
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-array-with-object">
+                Replace Array with Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/duplicate-observed-data">
+                Duplicate Observed Data
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/change-unidirectional-association-to-bidirectional">
+                Change Unidirectional Association to Bidirectional
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/change-bidirectional-association-to-unidirectional">
+                Change Bidirectional Association to Unidirectional
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-magic-number-with-symbolic-constant">
+                Replace Magic Number with Symbolic Constant
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/encapsulate-field">
+                Encapsulate Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/encapsulate-collection">
+                Encapsulate Collection
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-type-code-with-class">
+                Replace Type Code with Class
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-type-code-with-subclasses">
+                Replace Type Code with Subclasses
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-type-code-with-state-strategy">
+                Replace Type Code with State/Strategy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-subclass-with-fields">
+                Replace Subclass with Fields
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/simplifying-conditional-expressions">
+                Simplifying Conditional Expressions
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/decompose-conditional">
+                Decompose Conditional
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/consolidate-conditional-expression">
+                Consolidate Conditional Expression
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/consolidate-duplicate-conditional-fragments">
+                Consolidate Duplicate Conditional Fragments
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/remove-control-flag">
+                Remove Control Flag
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-nested-conditional-with-guard-clauses">
+                Replace Nested Conditional with Guard Clauses
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-conditional-with-polymorphism">
+                Replace Conditional with Polymorphism
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/introduce-null-object">
+                Introduce Null Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/introduce-assertion">
+                Introduce Assertion
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/simplifying-method-calls">
+                Simplifying Method Calls
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/rename-method">
+                Rename Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/add-parameter">
+                Add Parameter
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/remove-parameter">
+                Remove Parameter
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/separate-query-from-modifier">
+                Separate Query from Modifier
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/parameterize-method">
+                Parameterize Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-parameter-with-explicit-methods">
+                Replace Parameter with Explicit Methods
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/preserve-whole-object">
+                Preserve Whole Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-parameter-with-method-call">
+                Replace Parameter with Method Call
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/introduce-parameter-object">
+                Introduce Parameter Object
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/remove-setting-method">
+                Remove Setting Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/hide-method">
+                Hide Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-constructor-with-factory-method">
+                Replace Constructor with Factory Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-error-code-with-exception">
+                Replace Error Code with Exception
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-exception-with-test">
+                Replace Exception with Test
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/refactoring/techniques/dealing-with-generalization">
+                Dealing with Generalization
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/pull-up-field">
+                Pull Up Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/pull-up-method">
+                Pull Up Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/pull-up-constructor-body">
+                Pull Up Constructor Body
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/push-down-method">
+                Push Down Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/push-down-field">
+                Push Down Field
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-subclass">
+                Extract Subclass
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-superclass">
+                Extract Superclass
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/extract-interface">
+                Extract Interface
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/collapse-hierarchy">
+                Collapse Hierarchy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/form-template-method">
+                Form Template Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-inheritance-with-delegation">
+                Replace Inheritance with Delegation
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/replace-delegation-with-inheritance">
+                Replace Delegation with Inheritance
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="trail">
+            <a href="https://refactoring.guru/design-patterns">
+                <i class="fa fa-fw fa-puzzle-piece" aria-hidden="true"></i> Design Patterns
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/what-is-pattern">
+                What is a Pattern
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/what-is-pattern">
+                What’s a design pattern?
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/history">
+                History of patterns
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/why-learn-patterns">
+                Why should I learn patterns?
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/criticism">
+                Criticism of patterns
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/classification">
+                Classification of patterns
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/catalog">
+                Catalog
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-third-level">
+            <a href="https://refactoring.guru/design-patterns/creational-patterns">
+                Creational Patterns
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/factory-method">
+                Factory Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/abstract-factory">
+                Abstract Factory
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/builder">
+                Builder
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/prototype">
+                Prototype
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/singleton">
+                Singleton
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-third-level">
+            <a href="https://refactoring.guru/design-patterns/structural-patterns">
+                Structural Patterns
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/adapter">
+                Adapter
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/bridge">
+                Bridge
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/composite">
+                Composite
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/decorator">
+                Decorator
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/facade">
+                Facade
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/flyweight">
+                Flyweight
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/proxy">
+                Proxy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-third-level trail animated">
+            <a href="https://refactoring.guru/design-patterns/behavioral-patterns">
+                Behavioral Patterns
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/chain-of-responsibility">
+                Chain of Responsibility
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/command">
+                Command
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/iterator">
+                Iterator
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/mediator">
+                Mediator
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/memento">
+                Memento
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/observer">
+                Observer
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="trail animated active">
+            <a href="https://refactoring.guru/design-patterns/state">
+                State
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/strategy">
+                Strategy
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/template-method">
+                Template Method
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="">
+            <a href="https://refactoring.guru/design-patterns/visitor">
+                Visitor
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples animated">
+            <a href="https://refactoring.guru/design-patterns/examples">
+                Code Examples
+            </a>
+    
+
+    
+        <ul>
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/csharp">
+                C#
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/cpp">
+                C++
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/go">
+                Go
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item animated">
+            <a href="https://refactoring.guru/design-patterns/java">
+                Java
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/php">
+                PHP
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/python">
+                Python
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/ruby">
+                Ruby
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/swift">
+                Swift
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+                
+    
+        <li class="menu-code-examples-item">
+            <a href="https://refactoring.guru/design-patterns/typescript">
+                TypeScript
+            </a>
+    
+
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+
+    
+        </li>
+    
+
+            
+        </ul>
+    
+            </div>
+        <div class="sidebar-controls">
+            <div class="sidebar-controls-container">
+                <a href="https://refactoring.guru/home" title="Log in"><i class="fa fa-fw fa-fw fa-user"></i> Log in</a>
+                <a href="https://feedback.refactoring.guru/?lang=en" class="userecho-public" rel="nofollow" title="Feedback"><i class="fa fa-fw fa-fw fa-envelope" aria-hidden="true"></i> Contact us</a>
+            </div>
+        </div>
+    </div>
+</div></div></div><div class="os-scrollbar os-scrollbar-horizontal os-scrollbar-unusable"><div class="os-scrollbar-track os-scrollbar-track-off"><div class="os-scrollbar-handle" style="width: 100%; transform: translate(0px, 0px);"></div></div></div><div class="os-scrollbar os-scrollbar-vertical"><div class="os-scrollbar-track os-scrollbar-track-off"><div class="os-scrollbar-handle" style="height: 76.5094%; transform: translate(0px, 0px);"></div></div></div><div class="os-scrollbar-corner"></div></aside>
+    <footer class="footer center-content">
+    <div class="footer-container center-content-container">
+        <div class="footer-inner container-fluid">
+            <div class="row">
+                <div class="col-8 col-md-10">
+                    <ul class="footer-list footer-list-horizontal">
+                        <li><a href="https://refactoring.guru/">Home</a></li>
+                        <li><a href="https://refactoring.guru/refactoring">Refactoring</a></li>
+                        <li><a href="https://refactoring.guru/design-patterns">Design Patterns</a></li>
+                        <li><a href="https://refactoring.guru/store">Premium Content</a></li>
+                        <li><a href="https://feedback.refactoring.guru/?lang=en" rel="nofollow" class="userecho-public">Forum</a></li>
+                        <li><a href="https://feedback.refactoring.guru/?lang=en&amp;show_feedback_form_private=true" rel="nofollow" class="userecho-private">Contact us</a></li>
+                    </ul>
+                </div>
+                <div class="col-4 col-md-2">
+                    <ul class="footer-list footer-list-iconic">
+                                                    <li><a href="https://www.facebook.com/refactoring.guru"><i class="fa fa-facebook-official"></i></a></li>
+                                                <li><a href="https://refactoring.guru/newsletter" rel="nofollow"><i class="fa fa-envelope" aria-hidden="true"></i></a></li>
+                        <li><a href="https://github.com/RefactoringGuru"><i class="fa fa-github-circled"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-second">
+        <div class="footer-container center-content-container">
+            <div class="footer-inner container-fluid">
+                <div class="row">
+                    <div class="col-12 col-sm-8">
+                        <i class="fa fa-fw fa-copyright"></i> 2014-2021 <a href="https://refactoring.guru/">Refactoring.Guru</a>. <span style="white-space: nowrap">All rights reserved.</span><br>
+                        <object class="fa-fw" style="height: 0.8rem; filter: invert(50%);" type="image/svg+xml" data="./State_files/fa-building.svg">
+                            <img class="fa-fw" style="height: 0.8rem;" src="./State_files/fa-building.svg" alt="Organization address">
+                        </object> Khmelnitske shosse 19 / 27, Kamianets-Podilskyi, Ukraine, 32305<br>
+                        <i class="fa fa-fw fa-envelope"></i>  Email: support@refactoring.guru
+
+                        <div class="mt-2">
+                            <i class="fa fa-fw fa-image"></i> Illustrations by <a href="http://zhart.us/" rel="nofollow"><span style="white-space: nowrap">Dmitry Zhart</span></a></div>
+                    </div>
+                    <div class="footer-links-right col-12 col-sm-4 mt-4 mt-sm-0">
+                        <div class="row">
+                            <div class="col-8 col-sm-12">
+                                <ul class="footer-list">
+                                    <li><a href="https://refactoring.guru/terms"><span>Terms &amp; Conditions</span></a>
+                                    </li>
+                                    <li><a href="https://refactoring.guru/privacy-policy"><span>Privacy Policy</span></a>
+                                    </li>
+                                    <li><a href="https://refactoring.guru/content-usage-policy"><span>Content Usage Policy</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+
+    <script>
+function extend(){var extended={};var deep=false;var i=0;var length=arguments["length"];if(Object["prototype"]["toString"]["call"](arguments[0])=== '[object Boolean]'){deep= arguments[0];i++};var merge=function(obj){for(var prop in obj){if(Object["prototype"]["hasOwnProperty"]["call"](obj,prop)){if(deep&& Object["prototype"]["toString"]["call"](obj[prop])=== '[object Object]'){extended[prop]= extend(true,extended[prop],obj[prop])}else {extended[prop]= obj[prop]}}}};for(;i< length;i++){var obj=arguments[i];merge(obj)};return extended}
+function defer(method) {if (window.jQuery) {method();} else {setTimeout(function() { defer(method) }, 50);}}
+</script>
+<script>
++function(sd){sd = (typeof sd === "string") ? JSON.parse(atob(sd)) : sd;for(var property in sd){if(window[property]!== null&&  typeof window[property]=== 'object'){window[property]= extend(true,window[property],sd[property])}else {window[property]= sd[property]}}}("eyJsb2NhbGUiOiJlbiIsImxvY2FsZV9wcmVmaXgiOiIiLCJsb2NhbGl6ZWRfdXJsX3ByZWZpeF9tIjoiaHR0cHM6XC9cL3JlZmFjdG9yaW5nLmd1cnVcLyIsInVybF9wcmVmaXhfbSI6Imh0dHBzOlwvXC9yZWZhY3RvcmluZy5ndXJ1XC8iLCJsb2NhbGl6ZWRfdXJsX3ByZWZpeCI6Imh0dHBzOlwvXC9yZWZhY3RvcmluZy5ndXJ1XC8iLCJ1cmxfcHJlZml4IjoiaHR0cHM6XC9cL3JlZmFjdG9yaW5nLmd1cnVcLyIsImNoaW5lc2VfaG9tZSI6Imh0dHBzOlwvXC9yZWZhY3RvcmluZ2d1cnUuY25cLyIsInVzZXJfZWNob19hbGlhcyI6InJlZmFjdG9yaW5nIiwidXNlcl9lY2hvX2hvc3QiOiJmZWVkYmFjay5yZWZhY3RvcmluZy5ndXJ1IiwidXNlcl9lY2hvX3ByaXZhdGVfZm9ydW0iOiIyIiwidXNlcl9lY2hvX2xvY2FsZSI6ImVuIiwidXNlcl9lY2hvX3B1YmxpY19mb3J1bSI6IjMiLCJ1c2VyX2VjaG9fcHVibGljX2ZvcnVtX3VybCI6Imh0dHBzOlwvXC9mZWVkYmFjay5yZWZhY3RvcmluZy5ndXJ1XC8iLCJ1c2VyX2VjaG9fc3NvX3Rva2VuIjoiIn0=");
+</script>
+
+    <script defer="">
+        if (window.dataLayer && window.google_optimize) {
+            window.dataLayer.push({'event': 'optimize.activate'});
+        }
+    </script>
+<style>.async-hide { opacity: 0 !important} </style>
+<script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+    })(window,document.documentElement,'async-hide','dataLayer',4000,
+        {'GTM-M58XZN4':true});</script>
+<link rel="preconnect dns-prefetch" href="https://www.google-analytics.com/">
+<script>
+    var getCookie = function(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    };
+    var eraseCookie = function (name) {
+        document.cookie = name+'=; Path=/; Max-Age=-99999999;';
+    };
+
+    window.google_analytics = 'UA-521840-40';
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    var ga_queue = [];
+    window.gaOnCreate = function(){
+        ga_queue.push(arguments);
+    };
+
+            doTracking();
+    
+    function doTracking(clientId) {
+        window.gaOnCreate = function(){
+            ga.apply(this, arguments);
+        };
+
+        var options = {
+            'siteSpeedSampleRate': 100
+        };
+        if (clientId) {
+            options.clientId = clientId;
+        }
+        ga('create', 'UA-521840-40', options);
+
+                    ga('require', 'GTM-M58XZN4');
+            window.google_optimize = 'GTM-M58XZN4';
+        
+        // Fix broken Social Login referrer.
+        window.social_login_provider = window.social_login_provider || getCookie('social_login_provider');
+        if (window.social_login_provider) {
+            ga('set', 'referrer', null);
+            ga('send', 'social', window.social_login_provider, 'login', window.location.href);
+            eraseCookie('social_login_provider');
+        }
+
+        var user_id = getCookie('user_id');
+        if (user_id) {
+            ga('set', 'userId', user_id);
+        } else {
+            ga('set', 'userId', null);
+        }
+
+        var location = document.location.href;
+        if (typeof window.analytics_path_prefix === 'string') {
+            if (/^(https?:\/\/[^\/]+?)\/$/.test(location)) {
+                location = location.replace(/(https?:\/\/[^\/]+?)\//, '$1' + window.analytics_path_prefix);
+            }
+            else {
+                location = location.replace(/(https?:\/\/[^\/]+?)\//, '$1' + window.analytics_path_prefix + '/');
+            }
+            ga('set', 'location', location);
+        }
+
+        if (typeof window.analytics_location_prefix === 'string') {
+            location = location.replace(/(https?:\/\/[^\/]+?)\//, window.analytics_location_prefix);
+            ga('set', 'location', location);
+        }
+
+        ga('require', 'ec');
+        ga('send', 'pageview', (typeof window.analytics_path_prefix === 'string' ? window.analytics_path_prefix : '') + document.location.pathname);
+
+        ga_queue.forEach(function(item){
+            ga.apply(this, item);
+        });
+    }
+</script>
+
+<script defer="">
+    window.socialLikesButtons = {
+                facebook: {
+            counterUrl: "",
+            convertNumber: null
+        },
+                        };
+</script>
+
+<script defer="">
+    var CodeMirrorScripts = ["https://refactoring.guru/js/codemirror.min.js?id=ae8d6b195e9f2e68899e"];
+</script>
+
+
+
+    <script>window.loadContent = true;window.loadCart = true;</script>
+
+<script src="./State_files/codemirror.min.js"></script></body></html>

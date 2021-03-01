@@ -1,0 +1,15 @@
+Understand the actor and proactor deeper
+https://www.zhihu.com/question/26943938
+
+reactor：能收了你跟俺说一声。
+proactor: 你给我收十个字节，收好了跟俺说一声。
+
+callback就是reactor
+future/await就是proactor
+
+打个比方，我们去点心店吃碗面，首先先得去收银台点单付钱，
+同步阻塞的情况是：我点了碗辣酱加辣肉面，然后我就在收银台等着，等到面来了，我拿着面去吃了，后面所有的人都无法点单无法下单。
+而reactor（同步非阻塞）的情况是我点了碗辣酱加辣肉面，钱付好以后我就拿着号去座位上坐下了，等面好了后，服务员会叫“XXX号，你的面好了，自己来取”
+（服务员帮你送上来的叫proactor），
+这里收银台就是reactor或者叫dispatcher，店里会有一个小二定时的轮询去看XXX号的XXX面有没有好，好了以后就通知XXX你可以来拿面了，没好你就等着呗。
+

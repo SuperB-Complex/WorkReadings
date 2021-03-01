@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://www.cnblogs.com/luxiaoxun/p/4331110.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta name="description" content="Scalable IO in Javahttp://gee.cs.oswego.edu/dl/cpjslides/nio.pdf基本上所有的网络处理程序都有以下基本的处理过程:Read request">
+    <meta property="og:description" content="Scalable IO in Javahttp://gee.cs.oswego.edu/dl/cpjslides/nio.pdf基本上所有的网络处理程序都有以下基本的处理过程:Read request">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>《Scalable IO in Java》笔记 - 阿凡卢 - 博客园</title>
+    <link id="favicon" rel="shortcut icon" href="https://common.cnblogs.com/favicon.svg" type="image/svg+xml">
+    
+    <link rel="stylesheet" href="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/blog-common.min.css">
+    <link id="MainCss" rel="stylesheet" href="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/bundle-codinglife.min.css">
+    <link type="text/css" rel="stylesheet" href="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/custom.css">
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/bundle-codinglife-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/luxiaoxun/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/luxiaoxun/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/luxiaoxun/wlwmanifest.xml">
+    <script src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/osd.js"></script><script async="" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/analytics.js"></script><script type="text/javascript" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/encoder.js"></script><script>
+        var currentBlogId = 124362;
+        var currentBlogApp = 'luxiaoxun';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var isBlogOwner = false;
+        var skinName = 'CodingLife';
+        var visitorUserId = '';
+    </script>
+        <script>
+            var currentPostDateAdded = '2015-03-11 10:10';
+        </script>
+    <script src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/jquery-2.2.0.min.js"></script>
+    <script src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/blog-common.min.js"></script><style type="text/css">.medium-zoom-overlay{position:fixed;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .3s;will-change:opacity}.medium-zoom--opened .medium-zoom-overlay{cursor:pointer;cursor:zoom-out;opacity:1}.medium-zoom-image{cursor:pointer;cursor:zoom-in;transition:transform .3s cubic-bezier(.2,0,.2,1)!important}.medium-zoom-image--hidden{visibility:hidden}.medium-zoom-image--opened{position:relative;cursor:pointer;cursor:zoom-out;will-change:transform}</style>
+    
+    
+    
+<meta http-equiv="origin-trial" content="A+pvvGjoiNPDAn2JQFsT0CQbtlBZ8PLmAA4ReIHeP5mnOrPRuXf1nuQa1Dlu/MdwAmPuAC7cVDJLU1oBuOqMkQkAAAB5eyJvcmlnaW4iOiJodHRwczovL2dvb2dsZWFwaS5jb206NDQzIiwiZmVhdHVyZSI6IlRydXN0VG9rZW5zIiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9ZgbRtm4pU3oZiuNzOsKcC8ppFSZdcjP2qYcdQrFKVzkmiWH1kdYY1Mi9x7G8+PS8HV9Ha9Cz0gaMdKsiVZIgMAAAB7eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AxL6oBxcpn5rQDPKSAs+d0oxNyJYq2/4esBUh3Yx5z8QfcLu+AU8iFCXYRcr/CEEfDnkxxLTsvXPJFQBxHfvkgMAAACBeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A9KPtG5kl3oLTk21xqynDPGQ5t18bSOpwt0w6kGa6dEWbuwjpffmdUpR3W+faZDubGT+KIk2do0BX2ca16x8qAcAAACBeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A3HucHUo1oW9s+9kIKz8mLkbcmdaj5lxt3eiIMp1Nh49dkkBlg1Fhg4Fd/r0vL69mRRA36YutI9P/lJUfL8csQoAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><script src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/pubads_impl_2021022301.js" async=""></script><link rel="preload" href="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/f.txt" as="script"><script type="text/javascript" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/f.txt"></script><link rel="prefetch" href="https://9fb4a16141a5d86833a6820f59fabef9.safeframe.googlesyndication.com/safeframe/1-0-37/html/container.html"><link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html"></head>
+<body class="has-navbar" data-new-gr-c-s-check-loaded="14.997.0" data-gr-ext-installed="">
+    <a name="top"></a>
+    <div id="top_nav" class="navbar forpc">
+        <nav id="nav_main" class="navbar-main">
+            <ul id="nav_left" class="navbar-list navbar-left">
+                <li class="navbar-branding"><a href="https://www.cnblogs.com/" title="开发者的网上家园"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/logo.svg" alt="博客园Logo"></a></li>
+                <li><a href="https://www.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-sitehome&#39;)">首页</a></li>
+                <li><a href="https://news.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-news&#39;)">新闻</a></li>
+                <li><a href="https://q.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-q&#39;)">博问</a></li>
+                <li><a id="nav_brandzone" href="https://brands.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-brands&#39;)">专区</a></li>
+                <li><a href="https://ing.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-ing&#39;)">闪存</a></li>
+                <li><a href="https://edu.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-edu&#39;)">班级</a></li>
+            </ul>
+            <ul id="nav_right" class="navbar-list navbar-right">
+                <li>
+                    <form id="zzk_search" class="navbar-search" action="https://zzk.cnblogs.com/s" method="get">
+                        <input name="w" id="zzk_search_input" placeholder="代码改变世界" type="text" tabindex="3">
+                        <button type="submit" id="zzk_search_button">
+                            <img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/search.svg" alt="搜索">
+                        </button>
+                    </form>
+                </li>
+                <li id="navbar_login_status" class="navbar-list">
+                    <a id="navblog-myblog-icon" class="navbar-user-info navbar-blog" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx" alt="我的博客" title="我的博客" style="display: none;">
+                        <img id="myblog_icon" class="navbar-icon" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/myblog.svg" alt="我的博客">
+                    </a>
+                    <a class="navbar-user-info navbar-blog" href="https://i.cnblogs.com/EditPosts.aspx?opt=1" alt="写随笔" title="写随笔" style="display: none;">
+                        <img id="new_post_icon" class="navbar-icon" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/newpost.svg" alt="写随笔">
+                    </a>
+                    <a class="navbar-user-info navbar-message navbar-icon-wrapper" href="https://msg.cnblogs.com/" alt="短消息" title="短消息" style="display: none;">
+                        <img id="msg_icon" class="navbar-icon" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/message.svg" alt="短消息">
+                        <span id="msg_count" style="display: none"></span>
+                    </a>
+                    <div id="user_info" class="navbar-user-info dropdown" style="display: none;">
+                        <a class="dropdown-button" href="https://home.cnblogs.com/">
+                            <img id="user_icon" class="navbar-avatar" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/avatar-default.svg" alt="用户头像">
+                        </a>
+                        <div class="dropdown-menu">
+                            <a id="navblog-myblog-text" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx">我的博客</a>
+                            <a href="https://home.cnblogs.com/">我的园子</a>
+                            <a href="https://account.cnblogs.com/settings/account">账号设置</a>
+                            <a href="javascript:void(0)" onclick="logout();">退出登录</a>
+                        </div>
+                    </div>
+                    <a class="navbar-anonymous" href="https://account.cnblogs.com/signup/" style="display: inline;">注册</a>
+                    <a class="navbar-anonymous" href="javascript:void(0);" onclick="login()" style="display: inline;">登录</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    
+    <!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/luxiaoxun/"><img id="blogLogo" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/luxiaoxun/">阿凡卢</a>
+</h1>
+<h2>If you never try, you will never know.</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/luxiaoxun/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/%E9%98%BF%E5%87%A1%E5%8D%A2">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="javascript:void(0)" data-rss="https://www.cnblogs.com/luxiaoxun/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			<span id="stats_post_count">随笔 - 172&nbsp; </span>
+<span id="stats_article_count">文章 - 0&nbsp; </span>
+<span id="stats-comment_count">评论 - 876&nbsp; </span>
+<span id="stats-total-view-count">阅读 - 
+<span title="总阅读数: 3392201">
+339万</span></span>
+
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2 vertical-middle" href="https://www.cnblogs.com/luxiaoxun/p/4331110.html">
+    <span>《Scalable IO in Java》笔记</span>
+    
+
+
+</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body">
+    <p><strong>Scalable IO in Java</strong></p>
+<p><a title="http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf" href="http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf">http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf</a></p>
+<p>基本上所有的网络处理程序都有以下基本的处理过程:<br>Read request<br>Decode request<br>Process service<br>Encode reply<br>Send reply</p>
+<p><strong>Classic Service Designs</strong><br><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/112100115422225.jpg" alt="" class="medium-zoom-image"></p>
+<p>简单的代码实现：</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgba(0, 0, 255, 1)">class</span> Server <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() {
+        </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)"> {
+            ServerSocket ss </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> ServerSocket(PORT);
+            </span><span style="color: rgba(0, 0, 255, 1)">while</span> (!<span style="color: rgba(0, 0, 0, 1)">Thread.interrupted())
+            </span><span style="color: rgba(0, 0, 255, 1)">new</span> Thread(<span style="color: rgba(0, 0, 255, 1)">new</span> Handler(ss.accept())).start(); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">创建新线程来handle
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> or, single-threaded, or a thread pool</span>
+        } <span style="color: rgba(0, 0, 255, 1)">catch</span> (IOException ex) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">class</span> Handler <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+        </span><span style="color: rgba(0, 0, 255, 1)">final</span><span style="color: rgba(0, 0, 0, 1)"> Socket socket;
+        Handler(Socket s) { socket </span>=<span style="color: rgba(0, 0, 0, 1)"> s; }
+        </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() {
+            </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)"> {
+                </span><span style="color: rgba(0, 0, 255, 1)">byte</span>[] input = <span style="color: rgba(0, 0, 255, 1)">new</span> <span style="color: rgba(0, 0, 255, 1)">byte</span><span style="color: rgba(0, 0, 0, 1)">[MAX_INPUT];
+                socket.getInputStream().read(input);
+                </span><span style="color: rgba(0, 0, 255, 1)">byte</span>[] output =<span style="color: rgba(0, 0, 0, 1)"> process(input);
+                socket.getOutputStream().write(output);
+            } </span><span style="color: rgba(0, 0, 255, 1)">catch</span> (IOException ex) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+        }       
+        </span><span style="color: rgba(0, 0, 255, 1)">private</span> <span style="color: rgba(0, 0, 255, 1)">byte</span>[] process(<span style="color: rgba(0, 0, 255, 1)">byte</span>[] cmd) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>对于每一个请求都分发给一个线程，每个线程中都独自处理上面的流程。</p>
+<p>这种模型由于IO在阻塞时会一直等待，因此在用户负载增加时，性能下降的非常快。</p>
+<p>server导致阻塞的原因：</p>
+<p>1、serversocket的accept方法，阻塞等待client连接，直到client连接成功。</p>
+<p>2、线程从socket inputstream读入数据，会进入阻塞状态，直到全部数据读完。</p>
+<p>3、线程向socket outputstream写入数据，会阻塞直到全部数据写完。</p>
+<p>client导致阻塞的原因：</p>
+<p>1、client建立连接时会阻塞，直到连接成功。</p>
+<p>2、线程从socket输入流读入数据，如果没有足够数据读完会进入阻塞状态，直到有数据或者读到输入流末尾。</p>
+<p>3、线程从socket输出流写入数据，直到输出所有数据。</p>
+<p>4、socket.setsolinger()设置socket的延迟时间，当socket关闭时，会进入阻塞状态，直到全部数据都发送完或者超时。</p>
+<p>改进：采用基于事件驱动的设计，当有事件触发时，才会调用处理器进行数据处理。</p>
+<p><strong>Basic Reactor Design</strong><br><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/112105210899525.jpg" alt="" class="medium-zoom-image"><br class="Apple-interchange-newline">&nbsp;代码实现：</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgba(0, 0, 255, 1)">class</span> Reactor <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable { 
+    </span><span style="color: rgba(0, 0, 255, 1)">final</span><span style="color: rgba(0, 0, 0, 1)"> Selector selector;
+    </span><span style="color: rgba(0, 0, 255, 1)">final</span><span style="color: rgba(0, 0, 0, 1)"> ServerSocketChannel serverSocket;
+    Reactor(</span><span style="color: rgba(0, 0, 255, 1)">int</span> port) <span style="color: rgba(0, 0, 255, 1)">throws</span> IOException { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">Reactor初始化</span>
+        selector =<span style="color: rgba(0, 0, 0, 1)"> Selector.open();
+        serverSocket </span>=<span style="color: rgba(0, 0, 0, 1)"> ServerSocketChannel.open();
+        serverSocket.socket().bind(</span><span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> InetSocketAddress(port));
+        serverSocket.configureBlocking(</span><span style="color: rgba(0, 0, 255, 1)">false</span>); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">非阻塞</span>
+        SelectionKey sk = serverSocket.register(selector, SelectionKey.OP_ACCEPT); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">分步处理,第一步,接收accept事件</span>
+        sk.attach(<span style="color: rgba(0, 0, 255, 1)">new</span> Acceptor()); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">attach callback object, Acceptor</span>
+<span style="color: rgba(0, 0, 0, 1)">    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() { 
+        </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)"> {
+            </span><span style="color: rgba(0, 0, 255, 1)">while</span> (!<span style="color: rgba(0, 0, 0, 1)">Thread.interrupted()) {
+                selector.select();
+                Set selected </span>=<span style="color: rgba(0, 0, 0, 1)"> selector.selectedKeys();
+                Iterator it </span>=<span style="color: rgba(0, 0, 0, 1)"> selected.iterator();
+                </span><span style="color: rgba(0, 0, 255, 1)">while</span><span style="color: rgba(0, 0, 0, 1)"> (it.hasNext())
+                    dispatch((SelectionKey)(it.next()); </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">Reactor负责dispatch收到的事件</span>
+<span style="color: rgba(0, 0, 0, 1)">                selected.clear();
+            }
+        } </span><span style="color: rgba(0, 0, 255, 1)">catch</span> (IOException ex) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> dispatch(SelectionKey k) {
+        Runnable r </span>= (Runnable)(k.attachment()); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">调用之前注册的callback对象</span>
+        <span style="color: rgba(0, 0, 255, 1)">if</span> (r != <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">)
+            r.run();
+    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">class</span> Acceptor <span style="color: rgba(0, 0, 255, 1)">implements</span> Runnable { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> inner</span>
+        <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() {
+            </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)"> {
+                SocketChannel c </span>=<span style="color: rgba(0, 0, 0, 1)"> serverSocket.accept();
+                </span><span style="color: rgba(0, 0, 255, 1)">if</span> (c != <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">)
+                </span><span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> Handler(selector, c);
+            }
+            </span><span style="color: rgba(0, 0, 255, 1)">catch</span>(IOException ex) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+        }
+    }
+}
+
+</span><span style="color: rgba(0, 0, 255, 1)">final</span> <span style="color: rgba(0, 0, 255, 1)">class</span> Handler <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+    </span><span style="color: rgba(0, 0, 255, 1)">final</span><span style="color: rgba(0, 0, 0, 1)"> SocketChannel socket;
+    </span><span style="color: rgba(0, 0, 255, 1)">final</span><span style="color: rgba(0, 0, 0, 1)"> SelectionKey sk;
+    ByteBuffer input </span>=<span style="color: rgba(0, 0, 0, 1)"> ByteBuffer.allocate(MAXIN);
+    ByteBuffer output </span>=<span style="color: rgba(0, 0, 0, 1)"> ByteBuffer.allocate(MAXOUT);
+    </span><span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">final</span> <span style="color: rgba(0, 0, 255, 1)">int</span> READING = 0, SENDING = 1<span style="color: rgba(0, 0, 0, 1)">;
+    </span><span style="color: rgba(0, 0, 255, 1)">int</span> state =<span style="color: rgba(0, 0, 0, 1)"> READING;
+    
+    Handler(Selector sel, SocketChannel c) </span><span style="color: rgba(0, 0, 255, 1)">throws</span><span style="color: rgba(0, 0, 0, 1)"> IOException {
+        socket </span>= c; c.configureBlocking(<span style="color: rgba(0, 0, 255, 1)">false</span><span style="color: rgba(0, 0, 0, 1)">);
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Optionally try first read now</span>
+        sk = socket.register(sel, 0<span style="color: rgba(0, 0, 0, 1)">);
+        sk.attach(</span><span style="color: rgba(0, 0, 255, 1)">this</span>); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">将Handler作为callback对象</span>
+        sk.interestOps(SelectionKey.OP_READ); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">第二步,接收Read事件</span>
+<span style="color: rgba(0, 0, 0, 1)">        sel.wakeup();
+    }
+    </span><span style="color: rgba(0, 0, 255, 1)">boolean</span> inputIsComplete() { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    </span><span style="color: rgba(0, 0, 255, 1)">boolean</span> outputIsComplete() { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    </span><span style="color: rgba(0, 0, 255, 1)">void</span> process() { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() {
+        </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)"> {
+            </span><span style="color: rgba(0, 0, 255, 1)">if</span> (state ==<span style="color: rgba(0, 0, 0, 1)"> READING) read();
+            </span><span style="color: rgba(0, 0, 255, 1)">else</span> <span style="color: rgba(0, 0, 255, 1)">if</span> (state ==<span style="color: rgba(0, 0, 0, 1)"> SENDING) send();
+        } </span><span style="color: rgba(0, 0, 255, 1)">catch</span> (IOException ex) { <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> ... </span><span style="color: rgba(0, 128, 0, 1)">*/</span><span style="color: rgba(0, 0, 0, 1)"> }
+    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">void</span> read() <span style="color: rgba(0, 0, 255, 1)">throws</span><span style="color: rgba(0, 0, 0, 1)"> IOException {
+        socket.read(input);
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (inputIsComplete()) {
+            process();
+            state </span>=<span style="color: rgba(0, 0, 0, 1)"> SENDING;
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Normally also do first write now</span>
+            sk.interestOps(SelectionKey.OP_WRITE); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">第三步,接收write事件</span>
+<span style="color: rgba(0, 0, 0, 1)">        }
+    }
+    </span><span style="color: rgba(0, 0, 255, 1)">void</span> send() <span style="color: rgba(0, 0, 255, 1)">throws</span><span style="color: rgba(0, 0, 0, 1)"> IOException {
+        socket.write(output);
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (outputIsComplete()) sk.cancel(); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">write完就结束了, 关闭select key</span>
+<span style="color: rgba(0, 0, 0, 1)">    }
+}
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">上面 的实现用Handler来同时处理Read和Write事件, 所以里面出现状态判断
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">我们可以用State-Object pattern来更优雅的实现</span>
+<span style="color: rgba(0, 0, 255, 1)">class</span> Handler { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> ...</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span> run() { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> initial state is reader</span>
+<span style="color: rgba(0, 0, 0, 1)">        socket.read(input);
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (inputIsComplete()) {
+            process();
+            sk.attach(</span><span style="color: rgba(0, 0, 255, 1)">new</span> Sender());  <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">状态迁移, Read后变成write, 用Sender作为新的callback对象</span>
+<span style="color: rgba(0, 0, 0, 1)">            sk.interest(SelectionKey.OP_WRITE);
+            sk.selector().wakeup();
+        }
+    }
+    </span><span style="color: rgba(0, 0, 255, 1)">class</span> Sender <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+        </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span> run(){ <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> ...</span>
+<span style="color: rgba(0, 0, 0, 1)">            socket.write(output);
+            </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (outputIsComplete()) sk.cancel();
+        }
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="line-height: 1.5">这里用到了Reactor模式。</span></p>
+<p>关于Reactor模式的一些概念：</p>
+<p>Reactor：负责响应IO事件，当检测到一个新的事件，将其发送给相应的Handler去处理。</p>
+<p>Handler：负责处理非阻塞的行为，标识系统管理的资源；同时将handler与事件绑定。</p>
+<p>Reactor为单个线程，需要处理accept连接，同时发送请求到处理器中。</p>
+<p>由于只有单个线程，所以处理器中的业务需要能够快速处理完。</p>
+<p>改进：使用多线程处理业务逻辑。</p>
+<p><strong>Worker Thread Pools</strong><br><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/112148547777256.jpg" alt="" class="medium-zoom-image"><br class="Apple-interchange-newline">&nbsp;参考代码：</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgba(0, 0, 255, 1)">class</span> Handler <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> uses util.concurrent thread pool</span>
+    <span style="color: rgba(0, 0, 255, 1)">static</span> PooledExecutor pool = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> PooledExecutor(...);
+    </span><span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">final</span> <span style="color: rgba(0, 0, 255, 1)">int</span> PROCESSING = 3<span style="color: rgba(0, 0, 0, 1)">;
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> ...</span>
+    <span style="color: rgba(0, 0, 255, 1)">synchronized</span> <span style="color: rgba(0, 0, 255, 1)">void</span> read() { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> ...</span>
+<span style="color: rgba(0, 0, 0, 1)">        socket.read(input);
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (inputIsComplete()) {
+            state </span>=<span style="color: rgba(0, 0, 0, 1)"> PROCESSING;
+            pool.execute(</span><span style="color: rgba(0, 0, 255, 1)">new</span> Processer()); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">使用线程pool异步执行</span>
+<span style="color: rgba(0, 0, 0, 1)">        }
+    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">synchronized</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> processAndHandOff() {
+        process();
+        state </span>= SENDING; <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> or rebind attachment</span>
+        sk.interest(SelectionKey.OP_WRITE); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">process完,开始等待write事件</span>
+<span style="color: rgba(0, 0, 0, 1)">    }
+    
+    </span><span style="color: rgba(0, 0, 255, 1)">class</span> Processer <span style="color: rgba(0, 0, 255, 1)">implements</span><span style="color: rgba(0, 0, 0, 1)"> Runnable {
+        </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() { processAndHandOff(); }
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>将处理器的执行放入线程池，多线程进行业务处理。但Reactor仍为单个线程。</p>
+<p>继续改进：对于多个CPU的机器，为充分利用系统资源，将Reactor拆分为两部分。</p>
+<p><strong>Using Multiple Reactors</strong><br><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/112151380898648.jpg" alt="" class="medium-zoom-image"></p>
+<p>参考代码：</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre>Selector[] selectors; <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">subReactors集合, 一个selector代表一个subReactor</span>
+<span style="color: rgba(0, 0, 255, 1)">int</span> next = 0<span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 0, 255, 1)">class</span> Acceptor { <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> ...</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">synchronized</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> run() { ...
+        Socket connection </span>= serverSocket.accept(); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">主selector负责accept</span>
+        <span style="color: rgba(0, 0, 255, 1)">if</span> (connection != <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">)
+            </span><span style="color: rgba(0, 0, 255, 1)">new</span> Handler(selectors[next], connection); <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">选个subReactor去负责接收到的connection</span>
+        <span style="color: rgba(0, 0, 255, 1)">if</span> (++next == selectors.length) next = 0<span style="color: rgba(0, 0, 0, 1)">;
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>mainReactor负责监听连接，accept连接给subReactor处理，为什么要单独分一个Reactor来处理监听呢？因为像TCP这样需要经过3次握手才能建立连接，这个建立连接的过程也是要耗时间和资源的，单独分一个Reactor来处理，可以提高性能。</p>
+<p>&nbsp;</p>
+<p>参考：</p>
+<p>http://www.cnblogs.com/fxjwind/p/3363329.html</p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature" style="display: block;"><div>作者：<a href="http://www.cnblogs.com/luxiaoxun/" target="_blank">阿凡卢</a></div>
+<div>出处：<a href="http://www.cnblogs.com/luxiaoxun/" target="_blank">http://www.cnblogs.com/luxiaoxun/</a></div>
+<div>本文版权归作者所有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。</div>
+</div>
+<div class="clear"></div>
+<div id="blog_post_info_block"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/luxiaoxun/category/595362.html" target="_blank">Java</a></div>
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/luxiaoxun/tag/java/">java</a>,             <a href="https://www.cnblogs.com/luxiaoxun/tag/NIO/">NIO</a>,             <a href="https://www.cnblogs.com/luxiaoxun/tag/Reactor/">Reactor</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(4331110,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;1211fb30-2ddd-e111-aa3f-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/luxiaoxun/" target="_blank"><img src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/20180206111135.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/luxiaoxun/">阿凡卢</a><br>
+            <a href="https://home.cnblogs.com/u/luxiaoxun/followees/">关注 - 16</a><br>
+            <a href="https://home.cnblogs.com/u/luxiaoxun/followers/">粉丝 - 1114</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;1211fb30-2ddd-e111-aa3f-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(4331110,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">6</span>
+    </div>
+    <div class="buryit" onclick="votePost(4331110,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/luxiaoxun/p/4279997.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/luxiaoxun/p/4279997.html" title="发布于 2015-02-08 14:11">基于netty-socketio的web推送服务</a>
+    <br>
+    <a href="https://www.cnblogs.com/luxiaoxun/p/4442770.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/luxiaoxun/p/4442770.html" title="发布于 2015-04-20 21:49">使用Solr索引MySQL数据</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2015-03-11 22:10</span>&nbsp;
+<a href="https://www.cnblogs.com/luxiaoxun/">阿凡卢</a>&nbsp;
+阅读(<span id="post_view_count">12573</span>)&nbsp;
+评论(<span id="post_comment_count">3</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=4331110" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(4331110);return false;">收藏</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+<script src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/highlight.min.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 124362, cb_blogApp = 'luxiaoxun', cb_blogUserGuid = '1211fb30-2ddd-e111-aa3f-842b2b196315';
+    var cb_entryId = 4331110, cb_entryCreatedDate = '2015-03-11 22:10', cb_postType = 1;
+    updatePostStats(
+        [cb_entryId],
+        function(id, count) { $("#post_view_count").text(count) },
+        function(id, count) { $("#post_comment_count").text(count) })
+    zoomManager.apply("#cnblogs_post_body img:not(.code_img_closed):not(.code_img_opened)");
+</script>
+<a name="!comments"></a>
+<div id="blog-comments-placeholder">
+
+<div id="comment_pager_top">
+    
+</div>
+
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems">
+    <div class="feedbackNoItems"></div>
+</div>
+    <div class="feedbackItem">
+        <div class="feedbackListSubtitle">
+            <div class="feedbackManage">
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </div>
+            
+<a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#4000626" class="layer">#1楼</a>
+<a name="4000626" id="comment_anchor_4000626"></a>
+ 
+<span class="comment_date">2018-06-19 10:44</span>
+
+ 
+        <a id="a_comment_author_4000626" href="https://home.cnblogs.com/u/953790/" target="_blank">soputasmile</a>
+
+        </div>
+        <div class="feedbackCon">
+            
+<div id="comment_body_4000626" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    你好，博主，看了你的文章之后受益匪浅，但是有几个疑问，希望你能给我解答一下，不胜感激：<br>（1）在Basic Reactor Design中，我看到每次来了一个ACCEPT请求的时候，Acceptor里面new Handler()的时候，都是注册READ事件，难道就没有刚开始连接的时候就注册WRITE事件的时候吗<br>（2）依然是Basic Reactor Design里面，我发现Handler在处理完READ事件之后，就注册对应SocketChannel的WRITE事件，也就是说每一次连接，仍然是一个线程全程处理READ、Write事件，如果没有处理完，这个handler线程也无法处理其他的事情，这样相对“一个连接一个线程”的方法好像没有看到高效的地方。<br><br>不知道是不是我理解有问题，所以有这些疑问，希望博主能给一个解答，万分感谢！
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4000626, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4000626, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+        </div>
+    </div>
+    <div class="feedbackItem">
+        <div class="feedbackListSubtitle">
+            <div class="feedbackManage">
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </div>
+            
+<a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#4000910" class="layer">#2楼</a>
+<a name="4000910" id="comment_anchor_4000910"></a>
+[<span class="louzhu">楼主</span>] 
+<span class="comment_date">2018-06-19 16:00</span>
+
+ 
+        <a id="a_comment_author_4000910" href="https://www.cnblogs.com/luxiaoxun/" target="_blank">阿凡卢</a>
+
+        </div>
+        <div class="feedbackCon">
+            
+<div id="comment_body_4000910" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#4000626" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4000626);">@</a>
+soputasmile<br>（1）这是server端的模型，server端被动的先read request，再write response。<br>（2）在Basic Reactor Design里，就是一个线程处理读写，文章中说了。<br>文中：“由于只有单个线程，所以处理器中的业务需要能够快速处理完。<br>改进：使用多线程处理业务逻辑。”
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4000910, &#39;Digg&#39;, this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4000910, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4000910_avatar" style="display:none">
+            https://pic.cnblogs.com/face/434101/20180206111135.png
+        </span>
+
+        </div>
+    </div>
+    <div class="feedbackItem">
+        <div class="feedbackListSubtitle">
+            <div class="feedbackManage">
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </div>
+            
+<a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#4067948" class="layer">#3楼</a>
+<a name="4067948" id="comment_anchor_4067948"></a>
+    <span id="comment-maxId" style="display: none">4067948</span>
+    <span id="comment-maxDate" style="display: none">2018/9/15 下午5:27:39</span>
+ 
+<span class="comment_date">2018-09-15 17:27</span>
+
+ 
+        <a id="a_comment_author_4067948" href="https://home.cnblogs.com/u/786852/" target="_blank">小段阿誉</a>
+
+        </div>
+        <div class="feedbackCon">
+            
+<div id="comment_body_4067948" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#4000626" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4000626);">@</a>
+soputasmile<br>你好，对于你第二点的疑惑我是这样理解的。<br>哪怕用的是Basic Reactor Design，也比一连接一线程有优势，设想在一个网络很烂的环境下，网络延时经常发生，写数据或者读数据都要花费很长时间，在传统的一连接一线程模式下，线程会长时间阻塞，服务器为了继续处理其他连接的请求，不得不另启线程，导致线程越来越多，而在Basic Reactor Design模式下，读和写都不会阻塞，所以不会影响后续的连接请求，这也就是NIO支持更高并发的原因。<br>当然，对于网络环境好的情况下，我觉得这两种模式差别不是很大。无非第二种多了些线程开销。
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4067948, &#39;Digg&#39;, this.parentElement, false);">
+                支持(1)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4067948, &#39;Bury&#39;, this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+        </div>
+    </div>
+
+<div id="comment_pager_bottom">
+    
+</div>
+
+
+</div>
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/luxiaoxun/p/4331110.html#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    登录后才能发表评论，立即 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页
+</div>
+</div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="https://developer.aliyun.com/learning/topic/covid-19/2021?utm_content=g_1000240877" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-阿里云-充电&#39;)">【推荐】三月招聘季，充电拿Offer！阿里云携官方学习资料来给你开小灶啦</a><br><a href="https://developer.aliyun.com/learning/trainingcamp/vision/3?utm_content=g_1000241565" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-阿里云-AI&#39;)">【推荐】阿里云达摩院特别版--趣味视觉AI训练营，来参营过小考赢礼品</a><br><a href="http://www.softbam.com/index.htm" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-ucancode&#39;)">【推荐】大型组态、工控、仿真、CADGIS 50万行VC++源码免费下载</a><br><a href="https://www.cnblogs.com/cmt/p/14408628.html" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-AWS&#39;)">【求助】注册 Amazon Web Services(AWS) 账户，助园子一臂之力</a><br><a href="https://brands.cnblogs.com/huawei/topic/harmonyos-development-tutorial" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-华为专区&#39;)">【推荐】万物互联的时代，由你的代码定义，创建HarmonyOS应用</a><br></div>
+    <div id="opt_under_post"></div>
+    <div id="cnblogs_c1" class="under-post-card">
+        <div id="div-gpt-ad-1592365906576-0" style="width: 300px; height: 250px;" data-google-query-id="CI-M5IimiO8CFckQAQod2rcNZg"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" style="border: 0px; vertical-align: bottom;" data-google-container-id="1" data-load-complete="true" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/saved_resource.html"></iframe></div></div>
+    </div>
+    <div id="under_post_card1"><div class="under-post-card"><b>AWS免费产品</b>：<br>· <a onclick="ga(&quot;send&quot;, &quot;event&quot;, &quot;Link&quot;, &quot;click&quot;, &quot;aws-underpost-card&quot;)" href="https://aws.amazon.com/cn/free/webapps/?trk=ba_a134p000006vc6OAAQ&amp;trkCampaign=webapps&amp;sc_channel=ba&amp;sc_campaign=cnblogs&amp;sc_outcome=Acquisition&amp;sc_geo=CHNA&amp;sc_country=CN&amp;sc_publisher=Others" target="_blank">如何在AWS上免费构建网站</a><br>· <a onclick="ga(&quot;send&quot;, &quot;event&quot;, &quot;Link&quot;, &quot;click&quot;, &quot;aws-underpost-card&quot;)" href="https://aws.amazon.com/cn/free/storage/?trk=ba_a134p000006vc7JAAQ&amp;trkCampaign=storage&amp;sc_channel=ba&amp;sc_campaign=cnblogs&amp;sc_outcome=Acquisition&amp;sc_geo=CHNA&amp;sc_country=CN&amp;sc_publisher=Others" target="_blank">AWS免费云存储解决方案</a><br>· <a onclick="ga(&quot;send&quot;, &quot;event&quot;, &quot;Link&quot;, &quot;click&quot;, &quot;aws-underpost-card&quot;)" href="https://aws.amazon.com/cn/free/database/?trk=ba_a134p000006vc7YAAQ&amp;trkCampaign=database&amp;sc_channel=ba&amp;sc_campaign=cnblogs&amp;sc_outcome=Acquisition&amp;sc_geo=CHNA&amp;sc_country=CN&amp;sc_publisher=Others" target="_blank">在AWS上免费构建数据库</a><br>· <a onclick="ga(&quot;send&quot;, &quot;event&quot;, &quot;Link&quot;, &quot;click&quot;, &quot;aws-underpost-card&quot;)" href="https://aws.amazon.com/cn/free/machine-learning/?trk=ba_a134p000006vc7nAAA&amp;trkCampaign=ML&amp;sc_channel=ba&amp;sc_campaign=cnblogs&amp;sc_outcome=Acquisition&amp;sc_geo=CHNA&amp;sc_country=CN&amp;sc_publisher=Others" target="_blank">AWS上的免费机器学习</a></div></div>
+    <div id="cnblogs_c2" class="under-post-card">
+        <div id="div-gpt-ad-1592366332455-0" style="width: 468px; height: 60px;" data-google-query-id="CITq4oimiO8CFckQAQod2rcNZg"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" width="468" height="60" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" data-google-container-id="2" style="border: 0px; vertical-align: bottom;" data-load-complete="true" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/saved_resource(1).html"></iframe></div></div>
+    </div>
+    <div id="under_post_card2"><div class="itnews under-post-card">
+    <b>最新新闻</b>：
+    <br>
+ ·          <a href="https://news.cnblogs.com/n/689059/" target="_blank">路透称华为计划推出自有品牌电动汽车 华为再度否认</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688989/" target="_blank">张一鸣怎样跳出“增长的痛苦”？</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688978/" target="_blank">狂奔的B站，其实还没准备好</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688987/" target="_blank">“祸”拉拉：不能总是等出人命才想起补漏洞</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/689058/" target="_blank">李飞飞团队从动物身上get AI新思路，提出RL计算框架，让机器在复杂环境学习和进化</a>
+        <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="under-post-card"></div>
+    <script type="text/javascript">
+       var commentManager = new blogCommentManager();
+       commentManager.renderComments(0);
+       fixPostBody();
+       deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);       deliverT2();
+       deliverC1C2();
+       loadNewsAndKb();
+       loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);       LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+       GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+       loadOptUnderPost();
+       GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+	<div id="sideBar">
+		<div id="sideBarMain">
+			<div id="sidebar_news" class="newsItem"><!--done-->
+<h3 class="catListTitle">公告</h3>
+
+<div id="blog-news">
+    
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/luxiaoxun/">
+            阿凡卢
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/luxiaoxun/" title="入园时间：2012-08-03">
+            8年6个月
+        </a>
+        <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/luxiaoxun/followers/">
+            1114
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/luxiaoxun/followees/">
+            16
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow(&#39;1211fb30-2ddd-e111-aa3f-842b2b196315&#39;)">+加关注</a></div>
+        <script>getFollowStatus('1211fb30-2ddd-e111-aa3f-842b2b196315');</script>
+    </div>
+</div>
+
+</div>
+<div id="sidebar_c3"></div>
+			<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block"><div class="catListLink">
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+    
+<li><a href="https://www.cnblogs.com/luxiaoxun/p/" title="我的博客的随笔列表">我的随笔</a></li>
+<li><a href="https://www.cnblogs.com/luxiaoxun/MyComments.html" title="我的发表过的评论列表">我的评论</a></li>
+<li><a href="https://www.cnblogs.com/luxiaoxun/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li>
+<li><a href="https://www.cnblogs.com/luxiaoxun/RecentComments.html" title="我的博客的评论列表">最新评论</a></li>
+<li><a href="https://www.cnblogs.com/luxiaoxun/tag/" title="我的博客的标签列表">我的标签</a></li>
+
+</ul>
+</div>
+
+</div>
+
+<!-- 最新随笔 -->
+
+
+<!-- 我的标签 -->
+
+
+<!-- 积分与排名 -->
+<div id="sidebar_scorerank" class="sidebar-block"><div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	
+432313
+	</li>
+	<li class="liRank">
+		排名 -	
+1005
+	</li>
+</ul>
+</div>
+
+
+
+</div>
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+
+    <div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+        <h3 class="catListTitle">
+            
+随笔分类
+<span style="font-size:11px;font-weight:normal">(185)</span>
+
+
+        </h3>
+
+        <ul>
+
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/401946.html" rel="" target="">
+    Algorithm(29)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/401502.html" rel="" target="">
+    Big Data(17)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/502500.html" rel="" target="">
+    C#(11)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/401503.html" rel="" target="">
+    C/C++(19)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/401504.html" rel="" target="">
+    Data Structure(16)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/587260.html" rel="" target="">
+    Database(4)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/745188.html" rel="" target="">
+    Distributed System(14)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/513908.html" rel="" target="">
+    GIS(13)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/595362.html" rel="" target="">
+    Java(22)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/587259.html" rel="" target="">
+    Programming(30)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/470264.html" rel="" target="">
+    Python(3)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/luxiaoxun/category/401507.html" rel="" target="">
+    Research(7)
+</a>
+ 
+
+                </li>                
+            
+        </ul>
+
+
+    </div>    
+    <div id="sidebar_links509599" class="catList sidebar-block">
+        <h3 class="catListTitle">
+            
+友情链接
+
+
+
+        </h3>
+
+        <ul>
+
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="http://coolshell.cn/" rel="nofollow noopener noreferrer" target="">
+    酷壳
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="http://tech.meituan.com/" rel="nofollow noopener noreferrer" target="">
+    美团技术团队博客
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="http://www.ruanyifeng.com/blog/" rel="nofollow noopener noreferrer" target="">
+    阮一峰的网络日志
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://insights.thoughtworks.cn/" rel="nofollow noopener noreferrer" target="">
+    ThoughtWorks洞见
+</a>
+ 
+
+                </li>                
+            
+        </ul>
+
+
+    </div>    
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block"><div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/luxiaoxun/p/12040016.html">1. Re:flink基本原理</a></li>
+                    <li class="recent_comment_body"><p>虽然看不太懂</p>
+</li>
+                    <li class="recent_comment_author">--君君的喵爸</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/luxiaoxun/p/13041804.html">2. Re:基于springboot的后端服务开发脚手架</a></li>
+                    <li class="recent_comment_body"><p>guava 31了吧</p>
+</li>
+                    <li class="recent_comment_author">--君君的喵爸</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/luxiaoxun/p/5022333.html">3. Re:Web GIS离线解决方案</a></li>
+                    <li class="recent_comment_body">@-密普洛瑞斯 看这个项目源码示例，不要用GeoWebCache，我对这个也没怎么用过。...</li>
+                    <li class="recent_comment_author">--阿凡卢</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/luxiaoxun/p/5022333.html">4. Re:Web GIS离线解决方案</a></li>
+                    <li class="recent_comment_body"><p>然后我换MySQL存储方式，修改了配置文件MapDownloader.exe.config，还是也没有下载成功，我哭</p>
+</li>
+                    <li class="recent_comment_author">---密普洛瑞斯</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/luxiaoxun/p/5022333.html">5. Re:Web GIS离线解决方案</a></li>
+                    <li class="recent_comment_body"><p>救命啊啊啊啊哭了</p>
+</li>
+                    <li class="recent_comment_author">---密普洛瑞斯</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+
+<!-- 阅读排行榜 -->
+
+
+<!-- 评论排行榜 -->
+
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all">
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/3280146.html">
+                                1. C#多线程编程(62)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/3918054.html">
+                                2. RabbitMQ的几种典型使用场景(35)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/4454880.html">
+                                3. 百度谷歌离线地图解决方案（离线地图下载）(31)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/3374992.html">
+                                4. NPOI读写Excel(27)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/5272384.html">
+                                5. 一个轻量级分布式RPC框架--NettyRpc(21)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/8744826.html">
+                                6. ThreadLocal原理分析与使用场景(17)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/3784729.html">
+                                7. C#操作SQLite数据库(17)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/4887452.html">
+                                8. ZooKeeper基本原理(16)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/p/3802559.html">
+                                9. 基于GMap.Net的地图解决方案(15)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/luxiaoxun/archive/2012/08/10/2631812.html">
+                                10. C++中的new、operator new与placement new(15)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div></div></div>
+                    <script>loadBlogSideColumn();</script>
+			</div>			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2021 阿凡卢
+<br><span id="poweredby">Powered by .NET 5.0 on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+
+    <input type="hidden" id="antiforgery_token" value="CfDJ8EklyHYHyB5Oj4onWtxTnxbNMwXXAqG1VGUJOJCVCsvn6LgQwEiGuLzBf-TRoTqjZpWht5EIdHJVNKLzo73MUkxfRjDZSfkunIKD9rQ_aJlEjBiu18QNs-cpKF96Umg_lfFWanCOm3MVP8F0F8_Q2Gs">
+
+
+<iframe id="google_osd_static_frame_9566924677261" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="./《Scalable IO in Java》笔记 - 阿凡卢 - 博客园_files/saved_resource(2).html"></iframe></body></html>
